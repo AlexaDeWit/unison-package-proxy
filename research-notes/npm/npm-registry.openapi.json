@@ -1,0 +1,4783 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "npm Registry API",
+    "version": "1.0.0",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    },
+    "description": "Welcome to the npm registry API documentation!\n",
+    "x-logo": {
+      "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfQAAACyCAYAAAC0oD1PAAAAAXNSR0IArs4c6QAAAJZlWElmTU0AKgAAAAgABQESAAMAAAABAAEAAAEaAAUAAAABAAAASgEbAAUAAAABAAAAUgExAAIAAAARAAAAWodpAAQAAAABAAAAbAAAAAAAAABIAAAAAQAAAEgAAAABQWRvYmUgSW1hZ2VSZWFkeQAAAAOgAQADAAAAAQABAACgAgAEAAAAAQAAAfSgAwAEAAAAAQAAALIAAAAA7l/aDAAAAAlwSFlzAAALEwAACxMBAJqcGAAAAi1pVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDYuMC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyI+CiAgICAgICAgIDx4bXA6Q3JlYXRvclRvb2w+QWRvYmUgSW1hZ2VSZWFkeTwveG1wOkNyZWF0b3JUb29sPgogICAgICAgICA8dGlmZjpZUmVzb2x1dGlvbj43MjwvdGlmZjpZUmVzb2x1dGlvbj4KICAgICAgICAgPHRpZmY6T3JpZW50YXRpb24+MTwvdGlmZjpPcmllbnRhdGlvbj4KICAgICAgICAgPHRpZmY6WFJlc29sdXRpb24+NzI8L3RpZmY6WFJlc29sdXRpb24+CiAgICAgIDwvcmRmOkRlc2NyaXB0aW9uPgogICA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgpg60/ZAAALcklEQVR4Ae3aQYscxxkG4KqZkWwdrENAEIOJraDYSjAk4JCjLZ1MkkuOueToW/5CSH6Hz/kJIfgUy7rkllscC9ZrxTn4YJBPQavdmal0B4ORWtCrpmqravYZMGjbXfV9/XzT/c5oFYIXAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgUEEgVqhZveQnN99K1Zu45A2sYwy7FI7+u96+/aujoyc5OO7dfPODa3H94Una59jOHgsExgdKimEbt7ufvvvl0acLtpgs+fiNH/1sFVf/GPaObtwJjwMLBN774sFBZt9qgYUlBAgQIECAQGMCAr2xgWiHAAECBAgsERDoS9SsIUCAAAECjQkI9MYGoh0CBAgQILBEQKAvUbOGAAECBAg0JiDQGxuIdggQIECAwBIBgb5EzRoCBAgQINCYgEBvbCDaIUCAAAECSwQE+hI1awgQIECAQGMCAr2xgWiHAAECBAgsERDoS9SsIUCAAAECjQkI9MYGoh0CBAgQILBEQKAvUbOGAAECBAg0JiDQGxuIdggQIECAwBIBgb5EzRoCBAgQINCYgEBvbCDaIUCAAAECSwQE+hI1awgQIECAQGMCAr2xgWiHAAECBAgsERDoS9SsIUCAAAECjQkI9MYGoh0CBAgQILBEQKAvUbOGAAECBAg0JiDQGxuIdggQIECAwBKBzZJF1tQXGD+JrWMs2sg2pZCKVrD5swLjRDeF57ob5rp/trCfiwuMcy15x44zHWdb8jU+c0p+Cxy7H587XssEBPoyt6qrxhtquHkf7UN6WLKR4eFza/jvuturpPJ3e48P+8H65CyFf4VY9Kn26vAeelWof2d/AX9KZ2H/6RDpT4rVSvH6eM+Wul/H587wgeHhLoZH5a4hbIZPPT8ZbgTZtAAZ2gK02kuuxlV4nPZ/vXP84Hcle7l/862PrsT4/mnRbCl5BX3tPX772YZwvD/+/i/uhnvDH8u8Pvnh7T+9FOMfH+9Fehnhp3f99oPaaYq739z5/POjp/9vvp/+9sbt919exY/OCt2v43PnSdr/4d3jB3/O1/XTO92/detG2q0/Gz48fM+782mb8/w0fujyIkCgIYGvw41SX7IausrL18rVGIvOdR37/w3ZbrUqanTo7zqBfugTdn3dCdwIX49f6rwOTGD4m66ic92lor+iv5BprPf7okYXchEViwj0ivhKEyBAgACBXAICPZekfQgQIECAQEUBgV4RX2kCBAgQIJBLQKDnkrQPAQIECBCoKCDQK+IrTYAAAQIEcgkI9FyS9iFAgAABAhUFBHpFfKUJECBAgEAuAYGeS9I+BAgQIECgooBAr4ivNAECBAgQyCUg0HNJ2ocAAQIECFQUEOgV8ZUmQIAAAQK5BAR6Lkn7ECBAgACBigICvSK+0gQIECBAIJeAQM8laR8CBAgQIFBRQKBXxFeaAAECBAjkEhDouSTtQ4AAAQIEKgoI9Ir4ShMgQIAAgVwCAj2XpH0IECBAgEBFAYFeEV9pAgQIECCQS0Cg55K0DwECBAgQqCgg0CviK02AAAECBHIJCPRckvYhQIAAAQIVBQR6RXylCRAgQIBALgGBnkvSPgQIECBAoKKAQK+IrzQBAgQIEMglINBzSdqHAAECBAhUFBDoFfGVJkCAAAECuQQEei5J+xAgQIAAgYoCAr0ivtIECBAgQCCXgEDPJWkfAgQIECBQUUCgV8RXmgABAgQI5BIQ6Lkk7UOAAAECBCoKCPSK+EoTIECAAIFcAgI9l6R9CBAgQIBARQGBXhFfaQIECBAgkEtAoOeStA8BAgQIEKgoINAr4itNgAABAgRyCQj0XJL2IUCAAAECFQUEekV8pQkQIECAQC4BgZ5L0j4ECBAgQKCigECviK80AQIECBDIJSDQc0nahwABAgQIVBQQ6BXxlSZAgAABArkEBHouSfsQIECAAIGKAgK9Ir7SBJ4VSCGku+He9tnjWX9Oqez+WZu1GQEC5xXYnPdE5xEgUFZgCPMQU3jl/us//vUu7nfFqsVwe5fGal4ECBySgEA/pGm6lq4FxpCNIfxgsw5/2Yx/KvTaD1l+GgR6IV7bEqgmINCr0StMYCowxuyZb89TGEcIEJgV8Dv0WSInECBAgACB9gUEevsz0iEBAgQIEJgVEOizRE4gQIAAAQLtCwj09mekQwIECBAgMCsg0GeJnECAAAECBNoXEOjtz0iHBAgQIEBgVkCgzxI5gQABAgQItC8g0NufkQ4JECBAgMCsgECfJXICAQIECBBoX0Cgtz8jHRIgQIAAgVkBgT5L5AQCBAgQINC+gEBvf0Y6JECAAAECswICfZbICQQIECBAoH0Bgd7+jHRIgAABAgRmBQT6LJETCBAgQIBA+wICvf0Z6ZAAAQIECMwKCPRZIicQIECAAIH2BQR6+zPSIQECBAgQmBUQ6LNETiBAgAABAu0LCPT2Z6RDAgQIECAwK7CZPeMAT4idX9NF9Z9CiGOtEvXGPVNKJbbufLplvC8KpeBc//9evKjryFnn2zf5hbzXxyKlCpXa9znWxZ47z6l1UIcuZaAPQdX166L6H27gNNYqUW/cM8ZYYuuuZzs23z1KmbmO78Vu3zBD7xcy1rFIqUKl9n3ODVvsufOcWgd16FIGetyv3ul5ivsrw027jY9KX8Nutf39lXj1ejzL/9l8vIb1aXzyyy+OTktfRy/7r4fvJbuUjtM2/Xa1Wu966Xva51ka3jvH0+PLjry0ffxgu37l5+Pq/O/EZT29+Kqz9Hgd//Pi686/4mSz/fu1cOWdEvfr2MV4z25ONg/P39GLn7l77bVv1v/+6m7arzb9zvrFrzvXCma5JO1TXeDezTc/uBbXH56kffVeljSwGQL9LIR/3jn+7O0l660hQOByC/hHcZd7/q6+MYHhE3b8ONy5lH9z1tgotEOgOwGB3t3INEyAAAECBKYCAn1q4ggBAgQIEOhOQKB3NzINEyBAgACBqYBAn5o4QoAAAQIEuhMQ6N2NTMMECBAgQGAqINCnJo4QIECAAIHuBAR6dyPTMAECBAgQmAoI9KmJIwQIECBAoDsBgd7dyDRMgAABAgSmAgJ9auIIAQIECBDoTkCgdzcyDRMgQIAAgamAQJ+aOEKAAAECBLoTEOjdjUzDBAgQIEBgKiDQpyaOECBAgACB7gQEencj0zABAgQIEJgKCPSpiSMECBAgQKA7AYHe3cg0TIAAAQIEpgICfWriCAECBAgQ6E5AoHc3Mg0TIECAAIGpgECfmjhCgAABAgS6ExDo3Y1MwwQIECBAYCog0KcmjhAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECByYwP8ABJX2MCfo+K4AAAAASUVORK5CYII=\n",
+      "altText": "npm logo"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://registry.npmjs.org"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Introduction",
+      "x-displayName": "Introduction",
+      "description": "This is the API documentation for the npm registry. For information about the npm registry, website, and command-line interface (CLI), please refer to [https://docs.npmjs.com](https://docs.npmjs.com).\n"
+    },
+    {
+      "name": "Authentication",
+      "x-displayName": "Authentication & Authorization",
+      "description": "The npm registry API supports multiple types of bearer tokens for authentication:\n\n**Token Types:**\n\n**1. npm Session Token (`npmSessionToken`)**\nTraditional npm session tokens created via `npm login`. These tokens:\n- Are tied to a user account\n- Inherit the user's permissions\n- Have limited expiration\n- **Required for:** User account management, token creation/management\n\n**2. npm Access Token (`npmAccessToken`)**\nFine-grained tokens with specific permissions:\n- Can be scoped to specific packages and organizations\n- Can be scoped to specific operations (read, write, publish)\n- Have configurable expiration\n- **Supported for:** Most package operations where explicitly documented\n\n**3. OIDC id_token (`oidcIdToken`)**\nTokens from supported Identity Providers (CI/CD systems):\n- From GitHub Actions, GitLab CI, CircleCI, etc.\n- Must have `aud` claim set to `npm:registry.npmjs.org`\n- Short-lived tokens\n- **Required for:** OIDC token exchange only\n\n**4. OIDC Exchange Token (`oidcExchangeToken`)**\nShort-lived tokens obtained from OIDC token exchange:\n- Package-scoped permissions\n- Limited lifetime (typically 1 hour)\n- **Supported for:** Package publishing and management operations\n\n**Endpoint Authorization:**\n\nEach endpoint specifies which token types are accepted via security schemes.\nSome endpoints may accept multiple token types, others are restricted to specific types.\n\n**Example:**\n- `/tokens` endpoint: Only accepts `npmSessionToken`\n- `/oidc/token/exchange` endpoint: Only accepts `oidcIdToken`\n- Package publishing: May accept `npmSessionToken`, `npmAccessToken`, or `oidcExchangeToken`\n"
+    },
+    {
+      "name": "Tokens",
+      "x-displayName": "Tokens",
+      "description": "Token management endpoints for creating, listing, and deleting npm access tokens.\n"
+    },
+    {
+      "name": "OIDC",
+      "x-displayName": "OIDC",
+      "description": "OpenID Connect (OIDC) token exchange endpoints for CI/CD integrations.\n"
+    },
+    {
+      "name": "Trust",
+      "x-displayName": "Trust",
+      "description": "Trust-related endpoints for managing package trust and security settings.\n"
+    }
+  ],
+  "paths": {
+    "/-/team/{orgName}/{teamName}/package": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/OrgName"
+        },
+        {
+          "$ref": "#/components/parameters/TeamName"
+        },
+        {
+          "$ref": "#/components/parameters/RequiredBearerToken"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Access"
+        ],
+        "summary": "Get all packages for a team",
+        "description": "Get all of the packages a team has access to, as well as the access level that team has for each package.",
+        "operationId": "getTeamPackageGrants",
+        "security": [
+          {
+            "npmSessionToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/PackageAccessLevels"
+          },
+          "401": {
+            "$ref": "#/components/responses/responses-Unauthorized"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Access"
+        ],
+        "summary": "Grant access to a package for a team",
+        "operationId": "createTeamPackageGrant",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "package": {
+                    "type": "string",
+                    "description": "The name of the package to give access to"
+                  },
+                  "permissions": {
+                    "type": "string",
+                    "enum": [
+                      "read-only",
+                      "read-write"
+                    ],
+                    "description": "The access level of the package to grant to the team"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "npmSessionToken": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/EmptySuccess"
+          },
+          "401": {
+            "$ref": "#/components/responses/responses-Unauthorized"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Access"
+        ],
+        "summary": "Remove access to a package for a team",
+        "operationId": "deleteTeamPackageGrant",
+        "security": [
+          {
+            "npmSessionToken": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/EmptySuccess"
+          },
+          "401": {
+            "$ref": "#/components/responses/responses-Unauthorized"
+          }
+        }
+      }
+    },
+    "/-/org/{orgName}/package": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/OrgName"
+        },
+        {
+          "$ref": "#/components/parameters/RequiredBearerToken"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Access"
+        ],
+        "summary": "Get all packages for an org",
+        "description": "Get all of the packages an org has access to, as well a the access level that org has for each pacakge.",
+        "operationId": "getOrgPackages",
+        "security": [
+          {
+            "npmSessionToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/PackageAccessLevels"
+          },
+          "401": {
+            "$ref": "#/components/responses/responses-Unauthorized"
+          }
+        }
+      }
+    },
+    "/-/package/{escapedPackageName}/collaborators": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/EscapedPackageName"
+        },
+        {
+          "$ref": "#/components/parameters/RequiredBearerToken"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Access"
+        ],
+        "summary": "Get all of the users that have access to a package, as well as the access level that user has for each package.",
+        "operationId": "getPackageCollaborators",
+        "security": [
+          {
+            "npmSessionToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/UserAccessLevels"
+          },
+          "401": {
+            "$ref": "#/components/responses/responses-Unauthorized"
+          }
+        }
+      }
+    },
+    "/-/package/{escapedPackageName}/visibility": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/EscapedPackageName"
+        },
+        {
+          "$ref": "#/components/parameters/RequiredBearerToken"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Access"
+        ],
+        "summary": "Get the visibility of a package.",
+        "operationId": "getPackageVisibility",
+        "security": [
+          {
+            "npmSessionToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/PackageVisibility"
+          },
+          "401": {
+            "$ref": "#/components/responses/responses-Unauthorized"
+          }
+        }
+      }
+    },
+    "/-/package/{escapedPackageName}/access": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/EscapedPackageName"
+        }
+      ],
+      "post": {
+        "tags": [
+          "Access"
+        ],
+        "summary": "Sets the various access levels for a package.",
+        "operationId": "setPackageAccess",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "access": {
+                    "type": "string",
+                    "enum": [
+                      "public",
+                      "private"
+                    ],
+                    "description": "Visibility of a package"
+                  },
+                  "publish_requires_tfa": {
+                    "type": "boolean",
+                    "description": "Whether publishing this package requires multifactor auth"
+                  },
+                  "automation_token_overrides_tfa": {
+                    "type": "boolean",
+                    "description": "Whether or not automation tokens override the requirement for multifactor auth"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "npmSessionToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/EmptySuccess"
+          },
+          "401": {
+            "$ref": "#/components/responses/responses-Unauthorized"
+          }
+        }
+      }
+    },
+    "/-/npm/v1/security/advisories/bulk": {
+      "post": {
+        "tags": [
+          "Audit"
+        ],
+        "summary": "Get advisories for packages",
+        "description": "Get advisories for a list of packages and version ranges",
+        "operationId": "bulkAudit",
+        "requestBody": {
+          "required": true,
+          "description": "Packages with their versions",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "x-additionalPropertiesName": "@npm/example-package",
+                  "type": "array",
+                  "description": "Array of versions for this package",
+                  "items": {
+                    "type": "string",
+                    "description": "semver version"
+                  }
+                },
+                "example": {
+                  "@npmcli/arborist": [
+                    "1.0.0",
+                    "2.0.1"
+                  ],
+                  "@npmcli/config": [
+                    "10.4.2"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/BulkAudit"
+          },
+          "400": {
+            "$ref": "#/components/responses/InvalidPayload"
+          }
+        }
+      }
+    },
+    "/-/npm/v1/oidc/token/exchange/package/{package_name}": {
+      "post": {
+        "tags": [
+          "OIDC"
+        ],
+        "summary": "Exchange OIDC id_token for npm registry token",
+        "description": "Exchange a valid OIDC id_token (provided as a Bearer token) for a short-lived npm registry access token for the specified package.\n\n**OIDC Token Requirements:**\n- The Bearer token must be an OIDC id_token from a [supported Identity Provider (IdP)](https://docs.npmjs.com/trusted-publishers#supported-cicd-providers)\n- The `aud` (audience) claim must be set to `npm:registry.npmjs.org`\n\n**Important:** The Bearer token must be an OIDC id_token from an Identity Provider (IdP) npm supports. This endpoint differs from the rest of the API, which expects a standard npm access token.\n",
+        "operationId": "exchangeOidcToken",
+        "parameters": [
+          {
+            "name": "package_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Name of the npm package, url-encoded"
+          }
+        ],
+        "security": [
+          {
+            "oidcIdToken": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token_type": {
+                      "type": "string",
+                      "enum": [
+                        "oidc"
+                      ]
+                    },
+                    "token": {
+                      "type": "string"
+                    },
+                    "created": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-07-18T10:30:00.000Z"
+                    },
+                    "expires": {
+                      "type": "string",
+                      "format": "date-time",
+                      "example": "2025-07-18T11:30:00.000Z"
+                    }
+                  },
+                  "required": [
+                    "token_type",
+                    "token",
+                    "created",
+                    "expires"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "OIDC token exchange error - bad request"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "OIDC token exchange error - unauthorized"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Package not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "OIDC token exchange error - package not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "OIDC token exchange error - internal server error"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/-/org/{orgName}/user": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/OrgName"
+        },
+        {
+          "$ref": "#/components/parameters/RequiredBearerToken"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Org"
+        ],
+        "summary": "Get users in an org",
+        "description": "Get all of the users in an org, along with their access levels in that org",
+        "operationId": "getOrgMembership",
+        "security": [
+          {
+            "npmSessionToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/OrgMembers"
+          },
+          "401": {
+            "$ref": "#/components/responses/responses-Unauthorized"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Org"
+        ],
+        "summary": "Set user membership in an org",
+        "description": "Set a user's membership in an org. If the user is not already a member, an invite will be sent.",
+        "operationId": "changeOrgMembership",
+        "security": [
+          {
+            "npmSessionToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user": {
+                    "type": "string",
+                    "description": "Username to grant membership to org"
+                  },
+                  "role": {
+                    "type": "string",
+                    "enum": [
+                      "developer",
+                      "admin",
+                      "owner"
+                    ],
+                    "description": "Role to give user in org"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/OrgInvite"
+          },
+          "401": {
+            "$ref": "#/components/responses/responses-Unauthorized"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Org"
+        ],
+        "summary": "Remove user membership in an org",
+        "description": "Remove a user's membership in an org",
+        "operationId": "deleteOrgMembership",
+        "security": [
+          {
+            "npmSessionToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user": {
+                    "type": "string",
+                    "description": "Username to remove from the org"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/EmptySuccess"
+          },
+          "401": {
+            "$ref": "#/components/responses/responses-Unauthorized"
+          }
+        }
+      }
+    },
+    "/{escapedPackageName}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/EscapedPackageName"
+        },
+        {
+          "$ref": "#/components/parameters/RequiredBearerToken"
+        }
+      ],
+      "put": {
+        "tags": [
+          "Publish"
+        ],
+        "summary": "Publish a new version of a package",
+        "operationId": "publish",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "_id": {
+                    "type": "string",
+                    "example": "npm@2.0.0",
+                    "description": "The name and version of the package being published"
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "npm",
+                    "description": "The name of the package being published"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "a package manager for JavaScript",
+                    "description": "The description of the package being published"
+                  },
+                  "dist-tags": {
+                    "type": "object",
+                    "description": "dist-tag to apply for this new version",
+                    "additionalProperties": {
+                      "type": "string",
+                      "format": "semver",
+                      "description": "version for this tag, must be the version being uploaded"
+                    },
+                    "example": {
+                      "latest": "2.0.0"
+                    }
+                  },
+                  "dist": {
+                    "type": "object",
+                    "properties": {
+                      "integrity": {
+                        "type": "string",
+                        "format": "sha512",
+                        "description": "sha512 integrity string for this version's tarball",
+                        "example": "sha512-0p99G5Mu9FC3ixLarvgfU0O8xoc386LBll2UixE8rbSJrKRFoXbJFbGSOBN9exJiFXryiLDFFhCKjOOBxQ/dsQ=="
+                      },
+                      "shasum": {
+                        "type": "string",
+                        "format": "sha1",
+                        "description": "sha1 hex digest for this version's tarball",
+                        "example": "f783874393588901af1a4824a145fa009f174d9d"
+                      },
+                      "tarball": {
+                        "type": "string",
+                        "format": "url",
+                        "description": "url for the tarball will live. This is overwritten by the registry.",
+                        "example": "https://registry.npmjs.org/npm/-/npm-2.0.0.tgz"
+                      }
+                    }
+                  },
+                  "versions": {
+                    "description": "manifest (package.json) of the package to be published, indexed by the version being published",
+                    "additionalProperties": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "description": "package name"
+                        },
+                        "version": {
+                          "type": "string",
+                          "format": "semver",
+                          "description": "version of the package being published"
+                        }
+                      },
+                      "additionalProperties": {
+                        "oneOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "object"
+                          },
+                          {
+                            "type": "array"
+                          }
+                        ],
+                        "description": "other package.json content"
+                      }
+                    },
+                    "example": {
+                      "2.0.0": {
+                        "name": "npm",
+                        "version": "2.0.0",
+                        "description": "A package manager for node"
+                      }
+                    }
+                  },
+                  "access": {
+                    "type": "string",
+                    "example": "public",
+                    "enum": [
+                      "public",
+                      "restricted"
+                    ],
+                    "description": "Access level for this package. Whether it is public or not."
+                  },
+                  "_attachments": {
+                    "type": "object",
+                    "description": "Tarball and provenance attestation attachments",
+                    "additionalProperties": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "content_type": {
+                              "type": "string",
+                              "description": "tarball content type",
+                              "enum": [
+                                "application/octet-stream"
+                              ]
+                            },
+                            "data": {
+                              "type": "string",
+                              "format": "base64",
+                              "description": "base64 content of the tarball for this version"
+                            },
+                            "length": {
+                              "type": "integer",
+                              "description": "length of the tarball data string"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "content_type": {
+                              "type": "string",
+                              "description": "sigstore content type"
+                            },
+                            "data": {
+                              "type": "string",
+                              "format": "base64",
+                              "description": "base64 content of the provenance attestation for this version"
+                            },
+                            "length": {
+                              "type": "integer",
+                              "description": "length of the provenance data string"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "example": {
+                      "npm-2.0.0.tgz": {
+                        "content_type": "application/octet-stream",
+                        "data": "ZXhhbXBsZQo=",
+                        "length": 13
+                      },
+                      "npm-2.0.0.sigstore": {
+                        "content_type": "application/vnd.dev.sigstore.bundle+json;version=0.2",
+                        "data": "ZXhhbXBsZQo=",
+                        "length": 13
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "npmAccessToken": []
+          },
+          {
+            "npmSessionToken": []
+          },
+          {
+            "granularAccessToken": []
+          },
+          {
+            "oidcIdToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/PublishSuccess"
+          },
+          "401": {
+            "$ref": "#/components/responses/responses-Unauthorized"
+          }
+        }
+      }
+    },
+    "/-/v1/search": {
+      "get": {
+        "parameters": [
+          {
+            "name": "text",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The search query text"
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "schema": {
+              "type": "number"
+            },
+            "description": "The number of search results to return"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "number"
+            },
+            "description": "The starting index of the search results"
+          }
+        ],
+        "tags": [
+          "Search"
+        ],
+        "summary": "Search for packages on the registry",
+        "description": "Search for packages on the registry",
+        "operationId": "getsearch",
+        "security": [],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/SearchResults"
+          },
+          "400": {
+            "$ref": "#/components/responses/MissingField"
+          }
+        }
+      }
+    },
+    "/-/stage": {
+      "get": {
+        "tags": [
+          "Stage"
+        ],
+        "summary": "Fetch a list of all staged package versions for the authenticated user.",
+        "description": "Retrieve staged package versions that are awaiting maintainer review.\n\nThis endpoint returns only items visible to the authenticated user. Results will be returned \nin the order of most recently staged first in a descending order. Results are\npaginated and can be filtered by package name using the `package` query parameter.\n\n## Requirements\n- User MUST be authenticated with a valid npm token\n",
+        "operationId": "getStageItems",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^Bearer .+"
+            },
+            "description": "Authentication header. Supports both Bearer authentication.\n\n**Formats:**\n- `Bearer <token>` - npm access token or granular access token\n\n**Accepted token types:**\n- npm access token (traditional user token)\n"
+          },
+          {
+            "name": "package",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter the entire list of staged package versions by package name, url-encoded."
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0
+            },
+            "description": "Page number for pagination (0-indexed)"
+          },
+          {
+            "name": "perPage",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10,
+              "maximum": 100
+            },
+            "description": "Number of items to return per page"
+          }
+        ],
+        "security": [
+          {
+            "npmAccessToken": []
+          },
+          {
+            "granularAccessToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of staged package versions for the authenticated user.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StagePackageList"
+                },
+                "examples": {
+                  "success": {
+                    "summary": "Staged package versions retrieved successfully",
+                    "value": {
+                      "items": [
+                        {
+                          "id": "1de6f3db-2ed9-4d72-b3dd-8f0e2b474a2f",
+                          "packageName": "@npmcli/example-package",
+                          "version": "1.2.3",
+                          "tag": "latest",
+                          "createdAt": "2026-03-16T09:00:00.000Z",
+                          "actor": "octocat",
+                          "actorType": "user",
+                          "access": "public",
+                          "shasum": "4f7f5f1d5bcf2f72f6e4d6c4f3b2812d8a2f6c19"
+                        },
+                        {
+                          "id": "f8e7a45b-7a5f-4f31-8e6d-9dd1c6ef38c0",
+                          "packageName": "example-lib",
+                          "version": "0.4.0",
+                          "tag": "next",
+                          "createdAt": "2026-03-15T18:22:11.000Z",
+                          "actor": "npm-bot",
+                          "actorType": "trusted automation",
+                          "access": "private",
+                          "shasum": "8eb3b4e9b6e3d0d2c86be1e6d4f43f4be62e80ad"
+                        }
+                      ],
+                      "page": 0,
+                      "perPage": 10,
+                      "total": 2
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/-/stage/package/{package-name}": {
+      "post": {
+        "tags": [
+          "Stage"
+        ],
+        "summary": "Publishes a package version to staging to be reviewed by maintainers.",
+        "description": "Submit a package version to staging for maintainer review.\n\nThe request body must contain a publish-style packument payload, including version\nmetadata and package attachments. The staged item can then be reviewed, inspected,\napproved, or deleted by authorized maintainers.\n\n## Requirements\n- Package MUST exist or be creatable by the authenticated publisher\n- User MUST be authenticated with a valid npm token\n- Request body MUST include required fields in `StagedPackumentRequest`\n",
+        "operationId": "stagePackageVersion",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^Bearer .+"
+            },
+            "description": "Authentication header. Supports both Bearer authentication.\n\n**Formats:**\n- `Bearer <token>` - npm access token or granular access token\n\n**Accepted token types:**\n- npm access token (traditional user token)\n"
+          },
+          {
+            "name": "package-name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The name of the package to stage, including scope if applicable, url-encoded and slash-escaped."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StagedPackumentRequest"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "npmAccessToken": []
+          },
+          {
+            "granularAccessToken": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The package version was successfully staged for review.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Package version staged successfully."
+                    },
+                    "stageId": {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "Unique identifier for the staged package version, used for subsequent review actions."
+                    }
+                  }
+                },
+                "examples": {
+                  "success": {
+                    "summary": "Successful staging of package version",
+                    "value": {
+                      "message": "Package version staged successfully.",
+                      "stageId": "f8e7a45b-7a5f-4f31-8e6d-9dd1c6ef38c0"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - The request body is missing required fields or contains invalid data.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "missing_fields": {
+                    "summary": "Missing required fields in request body",
+                    "value": {
+                      "message": "Bad Request - Missing required fields: name, version, _attachments"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/PackageNotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/-/stage/{stage-id}": {
+      "get": {
+        "tags": [
+          "Stage"
+        ],
+        "summary": "Get details about a specific staged package version.",
+        "description": "Retrieve detailed metadata for a single staged package version.\n\nUse this endpoint to inspect a staged item before taking action, including package\nidentity, version, dist-tag, creator, and tarball information.\n\n## Requirements\n- `stage-id` MUST reference an existing staged package version\n- User MUST be authenticated with a valid npm token\n",
+        "operationId": "getStagePackageVersion",
+        "parameters": [
+          {
+            "name": "stage-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Unique identifier for the staged package version."
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^Bearer .+"
+            },
+            "description": "Authentication header. Supports both Bearer authentication.\n\n**Formats:**\n- `Bearer <token>` - npm access token or granular access token\n\n**Accepted token types:**\n- npm access token (traditional user token)\n"
+          }
+        ],
+        "security": [
+          {
+            "npmAccessToken": []
+          },
+          {
+            "granularAccessToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Details about the staged package version.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StagePackageVersion"
+                },
+                "examples": {
+                  "success": {
+                    "summary": "Staged package version details retrieved successfully",
+                    "value": {
+                      "id": "1de6f3db-2ed9-4d72-b3dd-8f0e2b474a2f",
+                      "packageName": "@npmcli/example-package",
+                      "version": "1.2.3",
+                      "tag": "latest",
+                      "createdAt": "2026-03-16T09:00:00.000Z",
+                      "actor": "octocat",
+                      "actorType": "user",
+                      "access": "public",
+                      "shasum": "4f7f5f1d5bcf2f72f6e4d6c4f3b2812d8a2f6c19"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/StagePackageVersionNotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Stage"
+        ],
+        "summary": "Delete a staged package version.",
+        "description": "Remove a staged package version from review.\n\nThis endpoint permanently deletes the staging record identified by `stage-id`.\nOnce deleted, the staged version can no longer be approved unless it is staged again.\n\n## Requirements\n- `stage-id` MUST reference an existing staged package version\n- User MUST be authenticated with a valid npm token\n- User MUST provide a valid `npm-otp` value for 2FA accounts\n",
+        "operationId": "deleteStagePackageVersion",
+        "parameters": [
+          {
+            "name": "stage-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Unique identifier for the staged package version."
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^Bearer .+"
+            },
+            "description": "Authentication header. Supports both Bearer authentication.\n\n**Formats:**\n- `Bearer <token>` - npm access token or granular access token\n\n**Accepted token types:**\n- npm access token (traditional user token)\n"
+          },
+          {
+            "name": "npm-otp",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "One-time password for two-factor authentication. Always required for this endpoint.\n\nWhen not provided for users with 2FA enabled, the API responds with 2FA polling payload.\n"
+          }
+        ],
+        "security": [
+          {
+            "npmAccessToken": []
+          },
+          {
+            "granularAccessToken": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The staged package version was successfully deleted."
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedWithWebAuthn"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/StagePackageVersionNotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/-/stage/{stage-id}/approve": {
+      "post": {
+        "tags": [
+          "Stage"
+        ],
+        "summary": "Approve a staged package version, publishing it to the npm registry.",
+        "description": "Approve a staged package version and publish it to the npm registry.\n\nThis endpoint moves a version from staged review state to a published package\nversion. On success, the staged record will be processed and the package version will become\ninstallable.\n\n## Requirements\n- `stage-id` MUST reference an existing staged package version\n- User MUST have permissions to approve and publish the package\n- User MUST be authenticated with a valid npm token\n- User MUST provide a valid `npm-otp` value for 2FA accounts\n",
+        "operationId": "approveStagePackageVersion",
+        "parameters": [
+          {
+            "name": "stage-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Unique identifier for the staged package version."
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^Bearer .+"
+            },
+            "description": "Authentication header. Supports both Bearer authentication.\n\n**Formats:**\n- `Bearer <token>` - npm access token or granular access token\n\n**Accepted token types:**\n- npm access token (traditional user token)\n"
+          },
+          {
+            "name": "npm-otp",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "One-time password for two-factor authentication. Always required for this endpoint.\n\nWhen not provided for users with 2FA enabled, the API responds with 2FA polling payload.\n"
+          }
+        ],
+        "security": [
+          {
+            "npmAccessToken": []
+          },
+          {
+            "granularAccessToken": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The staged package version was successfully approved and published to the npm registry.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Package version approved and published successfully."
+                    }
+                  }
+                },
+                "examples": {
+                  "success": {
+                    "summary": "Successful approval of staged package version",
+                    "value": {
+                      "message": "Package version approved and published successfully."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedWithWebAuthn"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/StagePackageVersionNotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/-/stage/{stage-id}/tarball": {
+      "get": {
+        "tags": [
+          "Stage"
+        ],
+        "summary": "Get the tarball for a staged package version.",
+        "description": "Download the package tarball for a staged package version.\n\nThis endpoint allows maintainers to inspect the contents of the staged package version\nby downloading the tarball directly from staging storage before approving it.\n\n## Requirements\n- `stage-id` MUST reference an existing staged package version\n- User MUST be authenticated with a valid npm token\n",
+        "operationId": "getStagePackageTarball",
+        "parameters": [
+          {
+            "name": "stage-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Unique identifier for the staged package version."
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^Bearer .+"
+            },
+            "description": "Authentication header. Supports both Bearer authentication.\n\n**Formats:**\n- `Bearer <token>` - npm access token or granular access token\n\n**Accepted token types:**\n- npm access token (traditional user token)\n"
+          }
+        ],
+        "security": [
+          {
+            "npmAccessToken": []
+          },
+          {
+            "granularAccessToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The tarball for the staged package version.",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                },
+                "examples": {
+                  "success": {
+                    "summary": "Successful retrieval of staged package tarball",
+                    "value": "(binary tarball data)"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/StagePackageVersionNotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/-/org/{orgName}/team": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/OrgName"
+        },
+        {
+          "$ref": "#/components/parameters/RequiredBearerToken"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Org"
+        ],
+        "summary": "Get teams in an org",
+        "description": "Get all of the teams in an org",
+        "operationId": "getScopeTeams",
+        "security": [
+          {
+            "npmSessionToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/OrgTeams"
+          },
+          "401": {
+            "$ref": "#/components/responses/responses-Unauthorized"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Team"
+        ],
+        "summary": "Create a new team",
+        "description": "Create a new team for an org",
+        "operationId": "putScopeTeam",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "The name of the team to create"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "The description of the team to create"
+                  }
+                },
+                "example": {
+                  "name": "wombats",
+                  "description": "All developers"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "npmSessionToken": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Team was created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "The name of the team that was created"
+                    }
+                  },
+                  "example": {
+                    "name": "wombats"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/responses-Unauthorized"
+          }
+        }
+      }
+    },
+    "/-/org/{orgName}/{teamName}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/OrgName"
+        },
+        {
+          "$ref": "#/components/parameters/TeamName"
+        },
+        {
+          "$ref": "#/components/parameters/RequiredBearerToken"
+        }
+      ],
+      "delete": {
+        "tags": [
+          "Team"
+        ],
+        "summary": "Delete a team",
+        "description": "Delete a team from a given org",
+        "operationId": "deleteTeam",
+        "security": [
+          {
+            "npmSessionToken": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/EmptySuccess"
+          },
+          "401": {
+            "$ref": "#/components/responses/responses-Unauthorized"
+          }
+        }
+      }
+    },
+    "/-/org/{orgName}/{teamName}/user": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/OrgName"
+        },
+        {
+          "$ref": "#/components/parameters/TeamName"
+        },
+        {
+          "$ref": "#/components/parameters/RequiredBearerToken"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Team"
+        ],
+        "summary": "Get all users in a team",
+        "description": "Get all users in a team",
+        "operationId": "getTeamMembership",
+        "security": [
+          {
+            "npmSessionToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/TeamUsers"
+          },
+          "401": {
+            "$ref": "#/components/responses/responses-Unauthorized"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Team"
+        ],
+        "summary": "Add a user to a team",
+        "description": "Add a user to a team in an org. The user must already be a member of the org.",
+        "operationId": "createTeamMembership",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user": {
+                    "type": "string",
+                    "description": "The username of the user to add to the team"
+                  }
+                },
+                "example": {
+                  "user": "npm-cli-bot"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "npmSessionToken": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/EmptySuccess"
+          },
+          "401": {
+            "$ref": "#/components/responses/responses-Unauthorized"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Team"
+        ],
+        "summary": "Remove a user from a team",
+        "operationId": "deleteTeamMembership",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user": {
+                    "type": "string",
+                    "description": "The username of the user to remove from the team"
+                  }
+                },
+                "example": {
+                  "user": "npm-cli-bot"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "npmSessionToken": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/EmptySuccess"
+          },
+          "401": {
+            "$ref": "#/components/responses/responses-Unauthorized"
+          }
+        }
+      }
+    },
+    "/-/npm/v1/tokens": {
+      "post": {
+        "tags": [
+          "Tokens"
+        ],
+        "summary": "Create npm access token",
+        "description": "Create a new npm access token with customizable permissions, scope restrictions,\nexpiration, and CIDR IP range limitations.\n\n**Requirements:**\n- Must be authenticated\n- **Two-factor authentication is required for this endpoint**\n  - If 2FA is enabled on your account, provide the OTP via the `npm-otp` header\n  - If 2FA is not enabled, an email OTP will be sent and must be provided via the `npm-otp` header\n  - For WebAuthn users, the OTP is returned in the `doneUrl` after authentication\n\n**Important notices:**\n- All responses include security notices via the `npm-notice` header regarding token limitations\n",
+        "operationId": "createToken",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^Bearer .+"
+            },
+            "description": "Bearer token for authentication. Must be an npm access token.\n\n**Format:** `Bearer <token>`\n\n**Accepted token types:**\n- npm access token (traditional user token created via `npm login`)\n"
+          },
+          {
+            "name": "npm-otp",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "One-time password for two-factor authentication. Always required for this endpoint.\n\n**How to obtain the OTP:**\n- If 2FA is enabled on your account, provide the OTP from your configured 2FA method\n- If 2FA is not enabled, an email OTP will be sent and must be provided (format: `<8-digit-otp-from-email>`)\n- For WebAuthn users, the OTP is returned by polling the `doneUrl` which returns an OTP code after hardware authentication (format: `<16-digit-otp>`)\n"
+          },
+          {
+            "name": "npm-auth-type",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "web"
+              ]
+            },
+            "description": "Authentication type for web-based flow. When set to \"web\", enables\nbrowser-based authentication flow for WebAuthn users.\n"
+          },
+          {
+            "name": "npm-command",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "token"
+              ]
+            },
+            "description": "Command context for the request. When set to \"token\", indicates\nthis is a token creation command.\n"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "password": {
+                    "type": "string",
+                    "description": "User password for authentication"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Human-readable name for the token"
+                  },
+                  "token_description": {
+                    "type": "string",
+                    "description": "Detailed description of token purpose",
+                    "nullable": true
+                  },
+                  "expires": {
+                    "oneOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ],
+                    "description": "Expiration in days (number) or ISO date string. Read-write tokens: maximum 90 days, defaults to 7 days. Read-only tokens: unlimited maximum, defaults to 30 days"
+                  },
+                  "bypass_2fa": {
+                    "type": "boolean",
+                    "description": "Allow token to bypass 2FA requirements",
+                    "default": false
+                  },
+                  "cidr": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "IP ranges that can use this token",
+                    "nullable": true
+                  },
+                  "packages": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Specific packages this token can access. Use [\"*\"] for all packages. Empty arrays are treated as not provided"
+                  },
+                  "scopes": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Scoped packages this token can access. Empty arrays are treated as not provided"
+                  },
+                  "orgs": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Organizations this token can access. Empty arrays are treated as not provided"
+                  },
+                  "packages_and_scopes_permission": {
+                    "type": "string",
+                    "enum": [
+                      "read-only",
+                      "read-write",
+                      "no-access"
+                    ],
+                    "description": "Permission for packages and scopes. Defaults to \"read-only\" if packages/scopes arrays have length > 0, otherwise \"no-access\""
+                  },
+                  "orgs_permission": {
+                    "type": "string",
+                    "enum": [
+                      "read-only",
+                      "read-write",
+                      "no-access"
+                    ],
+                    "description": "Permission for organizations. Defaults to \"read-only\" if orgs array has length > 0, otherwise \"no-access\""
+                  }
+                },
+                "required": [
+                  "password",
+                  "name"
+                ]
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "npmSessionToken": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Token created successfully",
+            "headers": {
+              "npm-notice": {
+                "description": "Security notice regarding token limitations.\nExample: \"SECURITY NOTICE: Granular tokens now limited to 90 days with 2FA enforced by default. Update your CI/CD workflows to avoid disruption. Learn more: https://gh.io/npm-token-changes\"\n",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "key": {
+                      "type": "string",
+                      "description": "The token ID (UUID format).",
+                      "example": "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Human-readable name for the token."
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Detailed description of token purpose.",
+                      "nullable": true
+                    },
+                    "token": {
+                      "type": "string",
+                      "description": "The full token value. IMPORTANT: This is the only time you will see the complete token - store it securely. Format: npm_<40 characters>",
+                      "example": "npm_aBcDeFgHiJkLmNoPqRsTuVwXyZ1234567890"
+                    },
+                    "expiry": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "The expiration date of the token in ISO 8601 format.",
+                      "nullable": true
+                    },
+                    "cidr": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "List of CIDR ranges that can use this token.",
+                      "nullable": true
+                    },
+                    "bypass_2fa": {
+                      "type": "boolean",
+                      "description": "Indicates if the token can bypass 2FA requirements."
+                    },
+                    "revoked": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Timestamp when the token was revoked. null for active tokens.",
+                      "nullable": true
+                    },
+                    "created": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Timestamp when the token was created."
+                    },
+                    "updated": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Timestamp when the token was last updated. null on creation.",
+                      "nullable": true
+                    },
+                    "accessed": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Timestamp when the token was last accessed. null on creation.",
+                      "nullable": true
+                    },
+                    "permissions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "description": "Permission name (e.g., \"package\")."
+                          },
+                          "action": {
+                            "type": "string",
+                            "description": "Permission action (\"read\" or \"write\")."
+                          }
+                        }
+                      },
+                      "description": "List of permissions granted to this token."
+                    },
+                    "scopes": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "description": "Scope type (e.g., \"package\", \"org\")."
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Scope name."
+                          }
+                        }
+                      },
+                      "description": "List of scopes this token has access to."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - Invalid parameters or validation failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "missingName": {
+                    "summary": "Missing token name",
+                    "value": {
+                      "error": "Token name is required"
+                    }
+                  },
+                  "packagesTypeValidation": {
+                    "summary": "Invalid type for packages field",
+                    "value": {
+                      "error": "Packages must be an array"
+                    }
+                  },
+                  "scopesTypeValidation": {
+                    "summary": "Invalid type for scopes field",
+                    "value": {
+                      "error": "Scopes must be an array"
+                    }
+                  },
+                  "orgsTypeValidation": {
+                    "summary": "Invalid type for organizations field",
+                    "value": {
+                      "error": "Organizations must be an array"
+                    }
+                  },
+                  "invalidPackagesPermission": {
+                    "summary": "Invalid packages_and_scopes_permission value",
+                    "value": {
+                      "error": "Invalid packages_and_scopes_permission. Must be one of: no-access, read-only, read-write"
+                    }
+                  },
+                  "invalidOrgsPermission": {
+                    "summary": "Invalid orgs_permission value",
+                    "value": {
+                      "error": "Invalid orgs_permission. Must be one of: no-access, read-only, read-write"
+                    }
+                  },
+                  "noScopes": {
+                    "summary": "No packages, scopes, or organizations specified",
+                    "value": {
+                      "error": "You must have at least one package / scope or organization added to this token."
+                    }
+                  },
+                  "noOrgsWithPermission": {
+                    "summary": "Organization permission set but no organizations specified",
+                    "value": {
+                      "error": "You must select at least one organization if granting organization permissions to this token."
+                    }
+                  },
+                  "noPackagesOrScopesWithPermission": {
+                    "summary": "Package/scope permission set but no packages or scopes specified",
+                    "value": {
+                      "error": "You must select at least one package or scope if granting package/scopes permissions to this token."
+                    }
+                  },
+                  "allPermissionsNoAccess": {
+                    "summary": "All permissions set to no-access",
+                    "value": {
+                      "error": "Please select at least one: package, scope or organization."
+                    }
+                  },
+                  "expirationLimit": {
+                    "summary": "Expiration exceeds maximum for read-write tokens",
+                    "value": {
+                      "error": "Read-write tokens cannot have expiration longer than 90 days"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedWithWebAuth"
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Tokens"
+        ],
+        "summary": "List npm access tokens",
+        "description": "List all access tokens associated with the authenticated user's account.\n\n**Requirements:**\n- Must be authenticated with a valid Bearer token\n\n**Response includes:**\n- All responses include security notices via the `npm-notice` header\n- Tokens are redacted for security: format is `npm_aBcD...7890` (first 8 chars including prefix + ... + last 4 chars)\n- Supports pagination via query parameters\n",
+        "operationId": "listTokens",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^Bearer .+"
+            },
+            "description": "Bearer token for authentication. Must be an npm access token.\n\n**Format:** `Bearer <token>`\n"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0
+            },
+            "description": "Page number for pagination (0-indexed)"
+          },
+          {
+            "name": "perPage",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10
+            },
+            "description": "Number of tokens to return per page"
+          }
+        ],
+        "security": [
+          {
+            "npmSessionToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of tokens retrieved successfully",
+            "headers": {
+              "npm-notice": {
+                "description": "Security notice regarding token limitations.\n",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "objects": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "description": "The name of the token."
+                          },
+                          "description": {
+                            "type": "string",
+                            "description": "The description of the token.",
+                            "nullable": true
+                          },
+                          "expiry": {
+                            "type": "string",
+                            "description": "The expiration date of the token in ISO 8601 format."
+                          },
+                          "key": {
+                            "type": "string",
+                            "description": "The token ID."
+                          },
+                          "token": {
+                            "type": "string",
+                            "description": "Redacted token in format: npm_aBcD...7890 (first 8 chars + ... + last 4 chars)",
+                            "example": "npm_aBcD...7890"
+                          },
+                          "readonly": {
+                            "type": "boolean",
+                            "description": "Indicates if the token has readonly permissions"
+                          },
+                          "bypass_2fa": {
+                            "type": "boolean",
+                            "description": "Indicates if the token can bypass 2FA requirements"
+                          },
+                          "cidr": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "description": "List of CIDR ranges that can use this token",
+                            "nullable": true
+                          },
+                          "revoked": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Timestamp when the token was revoked. null for active tokens",
+                            "nullable": true
+                          },
+                          "created": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Timestamp when the token was created"
+                          },
+                          "updated": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Timestamp when the token was last updated"
+                          },
+                          "accessed": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Timestamp when the token was last accessed",
+                            "nullable": true
+                          },
+                          "permissions": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string",
+                                  "description": "Permission name (e.g., \"package\")"
+                                },
+                                "action": {
+                                  "type": "string",
+                                  "description": "Permission action (\"read\" or \"write\")"
+                                }
+                              }
+                            },
+                            "description": "List of permissions granted to this token"
+                          },
+                          "scopes": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "type": {
+                                  "type": "string",
+                                  "description": "Scope type (e.g., \"package\", \"org\")"
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "description": "Scope name"
+                                }
+                              }
+                            },
+                            "description": "List of scopes this token has access to"
+                          }
+                        }
+                      }
+                    },
+                    "total": {
+                      "type": "integer",
+                      "description": "Total number of tokens"
+                    },
+                    "urls": {
+                      "type": "object",
+                      "description": "Pagination URLs for next/previous pages",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication",
+            "headers": {
+              "www-authenticate": {
+                "description": "Authentication challenge if applicable",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "npm-notice": {
+                "description": "Additional notice information",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/-/npm/v1/tokens/token/{token}": {
+      "delete": {
+        "tags": [
+          "Tokens"
+        ],
+        "summary": "Delete npm access token",
+        "description": "Delete an npm access token. The token can be specified as:\n- A UUID (token identifier)\n- An npm-prefixed token (format: `npm_` followed by 36 alphanumeric characters)\n\n**Requirements:**\n- Must be authenticated with a valid Bearer token\n- May require 2FA OTP depending on user settings\n\n**Web authentication flow:**\n- When `npm-auth-type=web` and `npm-command=token` headers are present and 2FA is required,\n  returns authentication URLs instead of an error\n",
+        "operationId": "deleteToken",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The token identifier to delete. Can be:\n- A UUID (e.g., `12345678-1234-1234-1234-123456789abc`)\n- An npm token (e.g., `npm_abcdefghijklmnopqrstuvwxyz0123456789`)\n"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^Bearer .+"
+            },
+            "description": "Bearer token for authentication. Must be an npm access token.\n\n**Format:** `Bearer <token>`\n"
+          },
+          {
+            "name": "npm-otp",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "One-time password for two-factor authentication. Required if the user has 2FA enabled.\n"
+          },
+          {
+            "name": "npm-auth-type",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "web"
+              ]
+            },
+            "description": "Authentication type for web-based flow. When set to \"web\", enables\nbrowser-based authentication flow for WebAuthn users.\n"
+          },
+          {
+            "name": "npm-command",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "token"
+              ]
+            },
+            "description": "Command context for the request. When set to \"token\", indicates\nthis is a token deletion command.\n"
+          }
+        ],
+        "security": [
+          {
+            "npmSessionToken": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Token deleted successfully",
+            "headers": {
+              "npm-notice": {
+                "description": "Security notice regarding token limitations.\n",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request - Invalid token format or token not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "invalidToken": {
+                    "summary": "Invalid token format",
+                    "value": {
+                      "message": "invalid token"
+                    }
+                  },
+                  "notFound": {
+                    "summary": "Token not found when searching by hash",
+                    "value": {
+                      "message": "could not delete token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid authentication or missing OTP",
+            "headers": {
+              "www-authenticate": {
+                "description": "Authentication challenge (e.g., \"OTP\" when OTP is required)",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "npm-notice": {
+                "description": "Additional notice information",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "description": "Error response for missing authentication or OTP",
+                      "properties": {
+                        "error": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "error"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "description": "Web authentication flow response",
+                      "properties": {
+                        "authUrl": {
+                          "type": "string",
+                          "format": "uri",
+                          "description": "URL to authenticate via web browser"
+                        },
+                        "doneUrl": {
+                          "type": "string",
+                          "format": "uri",
+                          "description": "URL to poll for completion of authentication"
+                        }
+                      },
+                      "required": [
+                        "authUrl",
+                        "doneUrl"
+                      ]
+                    }
+                  ]
+                },
+                "examples": {
+                  "unauthorized": {
+                    "summary": "No Authorization header provided",
+                    "value": {
+                      "error": "Unauthorized"
+                    }
+                  },
+                  "invalidOtp": {
+                    "summary": "Invalid OTP provided",
+                    "value": {
+                      "error": "invalid OTP"
+                    }
+                  },
+                  "web_auth_flow": {
+                    "summary": "Web authentication flow (2FA required)",
+                    "description": "When user has 2FA enabled and includes both `npm-auth-type=web` and `npm-command=token` headers.\n",
+                    "value": {
+                      "authUrl": "https://www.npmjs.com/auth/cli/00000000-0000-0000-0000-000000000000",
+                      "doneUrl": "https://registry.npmjs.org/-/v1/done?authId=00000000-0000-0000-0000-000000000000"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found - Token does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/-/package/{package}/trust": {
+      "get": {
+        "tags": [
+          "Trust"
+        ],
+        "summary": "Get all trusted publisher configurations for package",
+        "description": "Retrieve all trusted publisher configurations for a package.\n\nThis endpoint allows users with write permission to the package to view all existing trusted publisher\nconfigurations that have been set up for OIDC token exchange for their package.\n\n## Configuration Structure\n\nThe structure of the payload follows a specific design. Each trusted provider has their own unique set of claims.\nIn order to keep things clear and consistent, the properties to create a provider match the claims structure.\nThe caveat is when a claim requires partial matching through parsing.\n\n- All configurations MUST include a `type` and `claims` object\n- Top-level \"claims\" MUST match the cloud provider's exact claim properties\n- Claims MAY use exact string matching when supported\n- Claims MAY use an object structure to define one or multiple partial matching rules\n- Partial matching properties MUST be defined and documented by this API specification\n- This documentation SHALL only provide matches for specifically defined claim items\n\n## Requirements\n- Package MUST exist\n- User MUST have write permission to the package\n- MUST have 2FA enabled on their account\n- User MUST be authenticated\n",
+        "operationId": "getTrustedPublishers",
+        "parameters": [
+          {
+            "name": "package",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Name of the npm package, url-encoded"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^Bearer .+"
+            },
+            "description": "Authentication header. Supports both Bearer authentication.\n\n**Formats:**\n- `Bearer <token>` - npm access token or granular access token\n\n**Accepted token types:**\n- npm access token (traditional user token)\n"
+          },
+          {
+            "name": "npm-otp",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "One-time password for two-factor authentication. Always required for this endpoint.\n\nWhen not provided for users with 2FA enabled, the API responds with 2FA polling payload.\n"
+          }
+        ],
+        "security": [
+          {
+            "npmAccessToken": []
+          },
+          {
+            "granularAccessToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trusted publisher configurations retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OidcConfigs"
+                },
+                "examples": {
+                  "empty": {
+                    "summary": "No configurations",
+                    "value": []
+                  },
+                  "github": {
+                    "summary": "GitHub Actions configuration",
+                    "value": [
+                      {
+                        "id": "12345678-1234-1234-1234-123456789abc",
+                        "type": "github",
+                        "claims": {
+                          "repository": "my-org/my-package",
+                          "workflow_ref": {
+                            "file": "publish.yml"
+                          },
+                          "environment": "production"
+                        }
+                      }
+                    ]
+                  },
+                  "gitlab": {
+                    "summary": "GitLab CI configuration",
+                    "value": [
+                      {
+                        "id": "87654321-4321-4321-4321-abcdef123456",
+                        "type": "gitlab",
+                        "claims": {
+                          "project_path": "my-group/my-package",
+                          "ci_config_ref_uri": {
+                            "file": ".gitlab-ci.yml"
+                          },
+                          "environment": "production"
+                        }
+                      }
+                    ]
+                  },
+                  "circleci": {
+                    "summary": "CircleCI configuration",
+                    "value": [
+                      {
+                        "id": "e792f093-7302-4330-8d50-27d7acddc87e",
+                        "type": "circleci",
+                        "claims": {
+                          "oidc.circleci.com/org-id": "94b40e60-cfd5-486f-a04b-507abf27a83d",
+                          "oidc.circleci.com/project-id": "ff4d0d0d-5033-48c5-81e6-7c14a4715837",
+                          "oidc.circleci.com/pipeline-definition-id": "c959a6e7-5b83-4bc1-b46f-37bf13513490",
+                          "oidc.circleci.com/context-ids": [
+                            "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                          ],
+                          "oidc.circleci.com/vcs-origin": "github.com/myorg/myrepo"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid authentication / OTP",
+            "headers": {
+              "npm-notice": {
+                "description": "Notice header sent when 2FA is enabled and web auth headers are not present.\nContains URL for WebAuthn security key authentication.\n",
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Open https://www.npmjs.com/login/<uuid> to use your security key for authentication"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "description": "Error response for missing authentication or OTP",
+                      "properties": {
+                        "message": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "message"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "description": "Web authentication flow response",
+                      "properties": {
+                        "authUrl": {
+                          "type": "string",
+                          "format": "uri",
+                          "description": "URL to authenticate via web browser"
+                        },
+                        "doneUrl": {
+                          "type": "string",
+                          "format": "uri",
+                          "description": "URL to poll for completion of authentication"
+                        }
+                      },
+                      "required": [
+                        "authUrl",
+                        "doneUrl"
+                      ]
+                    }
+                  ]
+                },
+                "examples": {
+                  "unauthorized": {
+                    "summary": "No Authorization header provided",
+                    "description": "When no Authorization header is provided or the token is invalid.\n",
+                    "value": {
+                      "message": "Unauthorized"
+                    }
+                  },
+                  "web_auth_flow": {
+                    "summary": "2FA enabled + npm-otp header omitted (web auth flow)",
+                    "description": "When user has 2FA enabled, omits the `npm-otp` header, and includes both `npm-auth-type=web` and `npm-command=trust` headers.\n",
+                    "value": {
+                      "authUrl": "https://www.npmjs.com/auth/cli/00000000-0000-0000-0000-000000000000",
+                      "doneUrl": "https://registry.npmjs.org/-/v1/done?authId=00000000-0000-0000-0000-000000000000"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "2fa required or insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "2fa_disabled": {
+                    "summary": "Please enable 2fa for your account",
+                    "value": {
+                      "message": "Please enable 2fa for your account"
+                    }
+                  },
+                  "insufficient_permissions": {
+                    "summary": "Insufficient permissions to view configurations",
+                    "value": {
+                      "message": "Insufficient permissions to access trusted publisher configurations for this package"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Package not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "package_not_found": {
+                    "summary": "Package not found",
+                    "value": {
+                      "message": "Package not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Trust"
+        ],
+        "summary": "Add trusted publisher configuration for package",
+        "description": "Configure trusted publisher settings for a package to enable OIDC token exchange.\n\nThis endpoint allows users with write permission to the package to establish trust with CI/CD providers\n(GitHub Actions, GitLab CI, CircleCI, etc.) so that those services can publish to the package\nwithout requiring long-lived npm tokens.\n\n## Requirements\n- Package MUST exist\n- User MUST have write permission to the package\n- MUST have 2FA enabled on their account\n- User MUST be authenticated\n",
+        "operationId": "configureTrustedPublisher",
+        "parameters": [
+          {
+            "name": "package",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Name of the npm package, url-encoded"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^Bearer .+"
+            },
+            "description": "Authentication header. Supports both Bearer authentication.\n\n**Formats:**\n- `Bearer <token>` - npm access token or granular access token\n\n**Accepted token types:**\n- npm access token (traditional user token)\n"
+          },
+          {
+            "name": "npm-otp",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "One-time password for two-factor authentication. Always required for this endpoint.\n\nWhen not provided for users with 2FA enabled, the API responds with 2FA polling payload.\n"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OidcConfigsCreate"
+              },
+              "examples": {
+                "github": {
+                  "summary": "GitHub Actions configuration array",
+                  "value": [
+                    {
+                      "type": "github",
+                      "claims": {
+                        "repository": "my-org/my-package",
+                        "workflow_ref": {
+                          "file": "publish.yml"
+                        },
+                        "environment": "production"
+                      }
+                    }
+                  ]
+                },
+                "gitlab": {
+                  "summary": "GitLab CI configuration array",
+                  "value": [
+                    {
+                      "type": "gitlab",
+                      "claims": {
+                        "project_path": "my-group/my-package",
+                        "ci_config_ref_uri": {
+                          "file": ".gitlab-ci.yml"
+                        },
+                        "environment": "production"
+                      }
+                    }
+                  ]
+                },
+                "circleci": {
+                  "summary": "CircleCI configuration array",
+                  "value": [
+                    {
+                      "type": "circleci",
+                      "claims": {
+                        "oidc.circleci.com/org-id": "94b40e60-cfd5-486f-a04b-507abf27a83d",
+                        "oidc.circleci.com/project-id": "ff4d0d0d-5033-48c5-81e6-7c14a4715837",
+                        "oidc.circleci.com/pipeline-definition-id": "c959a6e7-5b83-4bc1-b46f-37bf13513490",
+                        "oidc.circleci.com/context-ids": [
+                          "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                        ],
+                        "oidc.circleci.com/vcs-origin": "github.com/myorg/myrepo"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "npmAccessToken": []
+          },
+          {
+            "granularAccessToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trusted publisher configuration created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OidcConfigs"
+                },
+                "examples": {
+                  "github": {
+                    "summary": "GitHub Actions configuration response",
+                    "value": [
+                      {
+                        "id": "12345678-1234-1234-1234-123456789abc",
+                        "type": "github",
+                        "claims": {
+                          "repository": "my-org/my-package",
+                          "workflow_ref": {
+                            "file": "publish.yml"
+                          },
+                          "environment": "production"
+                        }
+                      }
+                    ]
+                  },
+                  "gitlab": {
+                    "summary": "GitLab CI configuration response",
+                    "value": [
+                      {
+                        "id": "87654321-4321-4321-4321-abcdef123456",
+                        "type": "gitlab",
+                        "claims": {
+                          "project_path": "my-group/my-package",
+                          "ci_config_ref_uri": {
+                            "file": ".gitlab-ci.yml"
+                          },
+                          "environment": "production"
+                        }
+                      }
+                    ]
+                  },
+                  "circleci": {
+                    "summary": "CircleCI configuration response",
+                    "value": [
+                      {
+                        "id": "e792f093-7302-4330-8d50-27d7acddc87e",
+                        "type": "circleci",
+                        "claims": {
+                          "oidc.circleci.com/org-id": "94b40e60-cfd5-486f-a04b-507abf27a83d",
+                          "oidc.circleci.com/project-id": "ff4d0d0d-5033-48c5-81e6-7c14a4715837",
+                          "oidc.circleci.com/pipeline-definition-id": "c959a6e7-5b83-4bc1-b46f-37bf13513490",
+                          "oidc.circleci.com/context-ids": [
+                            "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                          ],
+                          "oidc.circleci.com/vcs-origin": "github.com/myorg/myrepo"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "invalid_config": {
+                    "summary": "Invalid trusted publisher configuration",
+                    "value": {
+                      "message": "Invalid trusted publisher configuration"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid authentication / OTP",
+            "headers": {
+              "npm-notice": {
+                "description": "Notice header sent when 2FA is enabled and web auth headers are not present.\nContains URL for WebAuthn security key authentication.\n",
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Open https://www.npmjs.com/login/<uuid> to use your security key for authentication"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "description": "Error response for missing authentication or OTP",
+                      "properties": {
+                        "message": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "message"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "description": "Web authentication flow response",
+                      "properties": {
+                        "authUrl": {
+                          "type": "string",
+                          "format": "uri",
+                          "description": "URL to authenticate via web browser"
+                        },
+                        "doneUrl": {
+                          "type": "string",
+                          "format": "uri",
+                          "description": "URL to poll for completion of authentication"
+                        }
+                      },
+                      "required": [
+                        "authUrl",
+                        "doneUrl"
+                      ]
+                    }
+                  ]
+                },
+                "examples": {
+                  "unauthorized": {
+                    "summary": "No Authorization header provided",
+                    "description": "When no Authorization header is provided or the token is invalid.\n",
+                    "value": {
+                      "message": "Unauthorized"
+                    }
+                  },
+                  "web_auth_flow": {
+                    "summary": "2FA enabled + npm-otp header omitted (web auth flow)",
+                    "description": "When user has 2FA enabled, omits the `npm-otp` header, and includes both `npm-auth-type=web` and `npm-command=trust` headers.\n",
+                    "value": {
+                      "authUrl": "https://www.npmjs.com/auth/cli/00000000-0000-0000-0000-000000000000",
+                      "doneUrl": "https://registry.npmjs.org/-/v1/done?authId=00000000-0000-0000-0000-000000000000"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "2fa required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "2fa_disabled": {
+                    "summary": "Please enable 2fa for your account",
+                    "value": {
+                      "message": "Please enable 2fa for your account"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Package not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "package_not_found": {
+                    "summary": "Package not found",
+                    "value": {
+                      "message": "Package not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - Configuration already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "config_limit_reached": {
+                    "summary": "Config already exists",
+                    "value": {
+                      "message": "trusted publisher config already exists for the package. Please delete and re-create."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/-/package/{package}/trust/{config-uuid}": {
+      "delete": {
+        "tags": [
+          "Trust"
+        ],
+        "summary": "Delete trusted publisher configuration",
+        "description": "Delete a specific trusted publisher configuration for a package by its UUID.\n\nThis endpoint allows users with write permission to the package to remove an existing trusted publisher\nconfiguration that was previously set up for OIDC token exchange.\n\n## Requirements\n- Package MUST exist\n- User MUST have write permission to the package\n- MUST have 2FA enabled on their account\n- User MUST be authenticated\n",
+        "operationId": "deleteTrustedPublisher",
+        "parameters": [
+          {
+            "name": "package",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Name of the npm package, url-encoded"
+          },
+          {
+            "name": "config-uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "UUID of the trusted publisher configuration to delete"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^Bearer .+"
+            },
+            "description": "Authentication header. Supports both Bearer authentication.\n\n**Formats:**\n- `Bearer <token>` - npm access token or granular access token\n\n**Accepted token types:**\n- npm access token (traditional user token)\n"
+          },
+          {
+            "name": "npm-otp",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "One-time password for two-factor authentication. Always required for this endpoint.\n\nWhen not provided for users with 2FA enabled, the API responds with 2FA polling payload.\n"
+          }
+        ],
+        "security": [
+          {
+            "npmAccessToken": []
+          },
+          {
+            "granularAccessToken": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Trusted publisher configuration deleted successfully",
+            "content": {}
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "invalid_uuid": {
+                    "summary": "Invalid UUID format",
+                    "value": {
+                      "message": "Invalid trusted publisher config id format"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - missing or invalid authentication / OTP",
+            "headers": {
+              "npm-notice": {
+                "description": "Notice header sent when 2FA is enabled and web auth headers are not present.\nContains URL for WebAuthn security key authentication.\n",
+                "schema": {
+                  "type": "string"
+                },
+                "example": "Open https://www.npmjs.com/login/<uuid> to use your security key for authentication"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "description": "Error response for missing authentication or OTP",
+                      "properties": {
+                        "message": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "message"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "description": "Web authentication flow response",
+                      "properties": {
+                        "authUrl": {
+                          "type": "string",
+                          "format": "uri",
+                          "description": "URL to authenticate via web browser"
+                        },
+                        "doneUrl": {
+                          "type": "string",
+                          "format": "uri",
+                          "description": "URL to poll for completion of authentication"
+                        }
+                      },
+                      "required": [
+                        "authUrl",
+                        "doneUrl"
+                      ]
+                    }
+                  ]
+                },
+                "examples": {
+                  "unauthorized": {
+                    "summary": "No Authorization header provided",
+                    "description": "When no Authorization header is provided or the token is invalid.\n",
+                    "value": {
+                      "message": "Unauthorized"
+                    }
+                  },
+                  "web_auth_flow": {
+                    "summary": "2FA enabled + npm-otp header omitted (web auth flow)",
+                    "description": "When user has 2FA enabled, omits the `npm-otp` header, and includes both `npm-auth-type=web` and `npm-command=trust` headers.\n",
+                    "value": {
+                      "authUrl": "https://www.npmjs.com/auth/cli/00000000-0000-0000-0000-000000000000",
+                      "doneUrl": "https://registry.npmjs.org/-/v1/done?authId=00000000-0000-0000-0000-000000000000"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "2fa required or insufficient permissions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "2fa_disabled": {
+                    "summary": "Please enable 2fa for your account",
+                    "value": {
+                      "message": "Please enable 2fa for your account"
+                    }
+                  },
+                  "insufficient_permissions": {
+                    "summary": "Insufficient permissions to delete configuration",
+                    "value": {
+                      "message": "Insufficient permissions to access trusted publisher config for the package"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Package or configuration not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "package_not_found": {
+                    "summary": "Package not found",
+                    "value": {
+                      "message": "Package not found"
+                    }
+                  },
+                  "config_not_found": {
+                    "summary": "Configuration not found",
+                    "value": {
+                      "message": "Trusted publisher configuration not found for the package"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "oidcIdToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "OIDC id_token from a supported Identity Provider (IdP) such as GitHub Actions, GitLab CI, or CircleCI.\nThe `aud` (audience) claim must be set to `npm:registry.npmjs.org`.\n\n**Supported Identity Providers:**\n- GitHub Actions\n- GitLab CI\n- CircleCI\n"
+      },
+      "npmSessionToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Traditional npm session token created via `npm login`.\nThese tokens are tied to a user account and inherit the user's permissions.\n"
+      },
+      "npmAccessToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Granular Access Token (GAT) with fine-grained permissions.\nThese tokens can be scoped to specific packages and operations.\n"
+      },
+      "granularAccessToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Granular Access Token (GAT) with fine-grained permissions.\nThese tokens can be scoped to specific packages and operations.\n(Alias for npmAccessToken)\n"
+      },
+      "oidcExchangeToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Short-lived npm registry token obtained by exchanging an OIDC id_token\nvia the `/oidc/token/exchange` endpoint. These tokens are package-scoped\nand have limited lifetime (typically 1 hour).\n"
+      }
+    },
+    "responses": {
+      "PackageAccessLevels": {
+        "description": "Packages with their access levels",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              },
+              "example": {
+                "@npmcli/arborist": "read-write",
+                "@npmcli/config": "read-only"
+              }
+            }
+          }
+        }
+      },
+      "PackageVisibility": {
+        "description": "Packages with their visibility",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              },
+              "example": {
+                "@npmcli/arborist": "public",
+                "@npmcli/hidden": "private"
+              }
+            }
+          }
+        }
+      },
+      "UserAccessLevels": {
+        "description": "User access levels",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              },
+              "example": {
+                "npm": "read-write",
+                "microsoft": "read-only"
+              }
+            }
+          }
+        }
+      },
+      "InvalidPayload": {
+        "description": "Invalid request payload",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "statusCode": {
+                  "type": "integer",
+                  "enum": [
+                    400
+                  ]
+                },
+                "error": {
+                  "type": "string",
+                  "example": "Bad Request"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Invalid request payload input"
+                }
+              }
+            }
+          }
+        }
+      },
+      "BulkAudit": {
+        "description": "Bulk audit response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "x-additionalPropertiesName": "@npm/example-package",
+                "type": "array",
+                "description": "Vulnerabilities for a given package",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "example": 100000
+                    },
+                    "url": {
+                      "type": "string",
+                      "format": "uri",
+                      "example": "https://github.com/advisories/GHSA-xxxx-xxxx-xxxx",
+                      "description": "URL for this advisory"
+                    },
+                    "title": {
+                      "type": "string",
+                      "example": "Prototype Pollution",
+                      "description": "Title for this advisory"
+                    },
+                    "severity": {
+                      "type": "string",
+                      "enum": [
+                        "info",
+                        "low",
+                        "moderate",
+                        "high",
+                        "critical"
+                      ],
+                      "description": "Severity for this advisory"
+                    },
+                    "vulnerable_versions": {
+                      "type": "string",
+                      "format": "semver",
+                      "example": ">1.0.1 <2.0.0",
+                      "description": "Versions of this package that this advisory applies to"
+                    },
+                    "cwe": {
+                      "type": "array",
+                      "description": "Common Weakness Enumeration",
+                      "items": {
+                        "type": "string",
+                        "example": "CWE-400"
+                      }
+                    },
+                    "cvss": {
+                      "type": "object",
+                      "description": "Common Vulnerability Scoring System",
+                      "properties": {
+                        "score": {
+                          "type": "number",
+                          "example": 7
+                        },
+                        "vectorString": {
+                          "type": "string",
+                          "example": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "OrgMembers": {
+        "description": "Org members with their access levels",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              },
+              "example": {
+                "npm": "owner",
+                "npm-cli-bot": "developer"
+              }
+            }
+          }
+        }
+      },
+      "OrgInvite": {
+        "description": "Confirmation about the org membership or invite that was generated",
+        "headers": {
+          "npm-notice": {
+            "description": "Additional info about the invite sent to the user",
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "org": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "The name of the org"
+                    },
+                    "size": {
+                      "type": "string",
+                      "description": "current size of the org, including invites"
+                    }
+                  }
+                },
+                "user": {
+                  "type": "string",
+                  "description": "The username that was invited or edited"
+                },
+                "role": {
+                  "type": "string",
+                  "description": "The role that the user was given in the org"
+                }
+              }
+            }
+          }
+        }
+      },
+      "PublishSuccess": {
+        "description": "Successful Publish",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "enum": [
+                    true
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "MissingField": {
+        "description": "A required parameter was missing",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Message explaining what was missing from the request"
+                },
+                "code": {
+                  "type": "string",
+                  "description": "Error code for this response"
+                }
+              }
+            },
+            "example": {
+              "error": "'text' query parameter is required",
+              "code": "ERR_TEXT_MISSING"
+            }
+          }
+        }
+      },
+      "SearchResults": {
+        "description": "Search results",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "objects": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "downloads": {
+                        "type": "object",
+                        "properties": {
+                          "monthly": {
+                            "type": "number",
+                            "description": "Download count for this package in the last month"
+                          },
+                          "weekly": {
+                            "type": "number",
+                            "description": "Download count for this package in the last week"
+                          }
+                        }
+                      },
+                      "dependents": {
+                        "type": "number",
+                        "description": "The number of packages that list this package as a dependency"
+                      },
+                      "updated": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "When the package was last updated"
+                      },
+                      "searchScore": {
+                        "type": "number",
+                        "description": "Search score of this result, same as score.final"
+                      },
+                      "package": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "description": "The name of the package"
+                          },
+                          "keywords": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "description": "A keyword associated with this package"
+                            }
+                          },
+                          "version": {
+                            "type": "string",
+                            "description": "The latest version of this package."
+                          },
+                          "description": {
+                            "type": "string",
+                            "description": "The description of this package from its package.json"
+                          },
+                          "sanitized_name": {
+                            "type": "string",
+                            "description": "The name of the package with some characters changed to help with indexing"
+                          },
+                          "publisher": {
+                            "type": "object",
+                            "properties": {
+                              "username": {
+                                "type": "string"
+                              },
+                              "email": {
+                                "type": "string"
+                              }
+                            },
+                            "description": "Information about the user that published the latest version of this package"
+                          },
+                          "maintainers": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "username": {
+                                  "type": "string"
+                                },
+                                "email": {
+                                  "type": "string"
+                                }
+                              }
+                            },
+                            "description": "Information about the users who own this package"
+                          },
+                          "license": {
+                            "type": "string",
+                            "description": "SPDX license for this package"
+                          },
+                          "date": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Timestamp of when the latest version of this package was published"
+                          },
+                          "links": {
+                            "type": "object",
+                            "properties": {
+                              "homepage": {
+                                "type": "string",
+                                "description": "The main homepage for this package"
+                              },
+                              "repository": {
+                                "type": "string",
+                                "description": "The repository for this package's source code"
+                              },
+                              "bugs": {
+                                "type": "string",
+                                "description": "Where to report bugs for this package"
+                              },
+                              "npm": {
+                                "type": "string",
+                                "description": "This package's main page on the npm website"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "score": {
+                        "type": "object",
+                        "properties": {
+                          "final": {
+                            "type": "number",
+                            "description": "Search score of this result, same as searchScore"
+                          },
+                          "detail": {
+                            "type": "object",
+                            "description": "Legacy \"pqm\" values of this result.  These are hard coded and left in for legacy purposes, all set to \"1\""
+                          }
+                        }
+                      },
+                      "flags": {
+                        "type": "object",
+                        "properties": {
+                          "insecure": {
+                            "type": "number",
+                            "description": "Legacy attribute. Always set to 0."
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "total": {
+                  "type": "number",
+                  "description": "The total number of items in the search results"
+                },
+                "time": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "The current time"
+                }
+              }
+            },
+            "example": {
+              "objects": [
+                {
+                  "downloads": {
+                    "monthly": 412841,
+                    "weekly": 93602
+                  },
+                  "dependents": 20,
+                  "updated": "2026-03-24T07:35:20.725Z",
+                  "searchScore": 1538.6487,
+                  "package": {
+                    "name": "@npm/types",
+                    "keywords": [
+                      "npm registry",
+                      "types",
+                      "typescript",
+                      "definitions",
+                      "typings"
+                    ],
+                    "version": "2.1.0",
+                    "description": "Typescript definitions for npm registry content",
+                    "sanitized_name": "@npm/types",
+                    "publisher": {
+                      "email": "npm-robot@github.com",
+                      "username": "npm-robot"
+                    },
+                    "maintainers": [
+                      {
+                        "email": "npm@npmjs.com",
+                        "username": "npm"
+                      },
+                      {
+                        "email": "ops@npmjs.com",
+                        "username": "npmci"
+                      }
+                    ],
+                    "license": "MIT",
+                    "date": "2025-04-28T20:18:14.734Z",
+                    "links": {
+                      "homepage": "https://github.com/npm/types#readme",
+                      "repository": "git+https://github.com/npm/types.git",
+                      "bugs": "https://github.com/npm/types/issues",
+                      "npm": "https://www.npmjs.com/package/@npm/types"
+                    }
+                  },
+                  "score": {
+                    "final": 1538.6487,
+                    "detail": {
+                      "popularity": 1,
+                      "quality": 1,
+                      "maintenance": 1
+                    }
+                  },
+                  "flags": {
+                    "insecure": 0
+                  }
+                }
+              ],
+              "total": 1,
+              "time": "2026-03-24T07:35:20.725Z"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Unauthorized - missing or invalid authentication",
+        "content": {
+          "application/json": {
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "description": "Error response for missing authentication",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              ]
+            },
+            "examples": {
+              "unauthorized": {
+                "summary": "No Authorization header provided",
+                "description": "When no Authorization header is provided or the token is invalid.\n",
+                "value": {
+                  "message": "Unauthorized"
+                }
+              }
+            }
+          }
+        }
+      },
+      "UnauthorizedWithWebAuthn": {
+        "description": "Unauthorized - missing or invalid authentication / OTP",
+        "headers": {
+          "npm-notice": {
+            "description": "Notice header sent when 2FA is enabled and web auth headers are not present.\nContains URL for WebAuthn security key authentication.\n",
+            "schema": {
+              "type": "string"
+            },
+            "example": "Open https://www.npmjs.com/login/<uuid> to use your security key for authentication"
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "description": "Error response for missing authentication or OTP",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "description": "Web authentication flow response",
+                  "properties": {
+                    "authUrl": {
+                      "type": "string",
+                      "format": "uri",
+                      "description": "URL to authenticate via web browser"
+                    },
+                    "doneUrl": {
+                      "type": "string",
+                      "format": "uri",
+                      "description": "URL to poll for completion of authentication"
+                    }
+                  },
+                  "required": [
+                    "authUrl",
+                    "doneUrl"
+                  ]
+                }
+              ]
+            },
+            "examples": {
+              "unauthorized": {
+                "summary": "No Authorization header provided",
+                "description": "When no Authorization header is provided or the token is invalid.\n",
+                "value": {
+                  "message": "Unauthorized"
+                }
+              },
+              "web_auth_flow": {
+                "summary": "2FA enabled + npm-otp header omitted (web auth flow)",
+                "description": "When user has 2FA enabled, omits the `npm-otp` header, and includes both `npm-auth-type=web` and `npm-command=stage` headers.\n",
+                "value": {
+                  "authUrl": "https://www.npmjs.com/auth/cli/00000000-0000-0000-0000-000000000000",
+                  "doneUrl": "https://registry.npmjs.org/-/v1/done?authId=00000000-0000-0000-0000-000000000000"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "2fa required or insufficient permissions",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            },
+            "examples": {
+              "2fa_disabled": {
+                "summary": "Please enable 2fa for your account",
+                "value": {
+                  "message": "Please enable 2fa for your account"
+                }
+              },
+              "insufficient_permissions": {
+                "summary": "Insufficient permissions to view resource",
+                "value": {
+                  "message": "Insufficient permissions to access this resource"
+                }
+              }
+            }
+          }
+        }
+      },
+      "PackageNotFound": {
+        "description": "Not Found - The specified package does not exist.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            },
+            "examples": {
+              "package_not_found": {
+                "summary": "Package not found",
+                "value": {
+                  "message": "Not Found - The specified package does not exist."
+                }
+              }
+            }
+          }
+        }
+      },
+      "StagePackageVersionNotFound": {
+        "description": "Not Found - No staged package version found with the provided ID.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            },
+            "examples": {
+              "stage_package_not_found": {
+                "summary": "Staged package version not found",
+                "value": {
+                  "message": "Not Found - No staged package version found with the provided ID."
+                }
+              }
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "Conflict - The request could not be completed due to a conflict.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            },
+            "examples": {
+              "conflict": {
+                "summary": "Conflict error",
+                "value": {
+                  "message": "Conflict - The request could not be completed due to a conflict."
+                }
+              }
+            }
+          }
+        }
+      },
+      "TooManyRequests": {
+        "description": "Too Many Requests - Rate limit exceeded.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            },
+            "examples": {
+              "rate_limit_exceeded": {
+                "summary": "Rate limit exceeded",
+                "value": {
+                  "message": "Too Many Requests - Rate limit exceeded."
+                }
+              }
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "Internal Server Error - An internal error occurred.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            },
+            "examples": {
+              "internal_error": {
+                "summary": "Internal Server Error",
+                "value": {
+                  "message": "An error occurred while processing your request."
+                }
+              }
+            }
+          }
+        }
+      },
+      "TeamUsers": {
+        "description": "The users in a team",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "description": "A username of a user in the team"
+              },
+              "example": [
+                "npm",
+                "npm-cli-bot"
+              ]
+            }
+          }
+        }
+      },
+      "OrgTeams": {
+        "description": "The teams in an org",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "description": "The teams in the org, in the format of orgname:teamname"
+              },
+              "example": [
+                "@npmcli:wombats"
+              ]
+            }
+          }
+        }
+      },
+      "UnauthorizedWithWebAuth": {
+        "description": "Unauthorized - Authentication scenarios based on 2FA status and header presence.\n\n**Authentication Scenarios:**\n\n1. **No Authorization header**: Returns generic \"Unauthorized\" error when no Bearer token is provided or the token is invalid\n2. **No 2FA enabled + npm-otp header omitted**: Returns error requesting email OTP. An email is automatically sent to the user's registered email address\n3. **2FA enabled + npm-otp header omitted (legacy flow)**: Returns 2FA error with npm-notice header containing WebAuthn URL. This is for older CLI versions without web auth support\n4. **2FA enabled + npm-otp header omitted (web auth flow)**: Returns authentication URLs (authUrl and doneUrl) when both npm-auth-type=web and npm-command=token headers are present\n",
+        "headers": {
+          "npm-notice": {
+            "description": "Notice header sent when 2FA is enabled and web auth headers are not present.\nContains URL for WebAuthn security key authentication.\n",
+            "schema": {
+              "type": "string"
+            },
+            "example": "Open https://www.npmjs.com/login/<uuid> to use your security key for authentication"
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "description": "Error response for missing authentication or OTP",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "description": "Web authentication flow response",
+                  "properties": {
+                    "authUrl": {
+                      "type": "string",
+                      "format": "uri",
+                      "description": "URL to authenticate via web browser"
+                    },
+                    "doneUrl": {
+                      "type": "string",
+                      "format": "uri",
+                      "description": "URL to poll for completion of authentication"
+                    }
+                  },
+                  "required": [
+                    "authUrl",
+                    "doneUrl"
+                  ]
+                }
+              ]
+            },
+            "examples": {
+              "unauthorized": {
+                "summary": "No Authorization header provided",
+                "description": "When no Authorization header is provided or the token is invalid.\n",
+                "value": {
+                  "error": "Unauthorized"
+                }
+              },
+              "no_2fa_missing_otp": {
+                "summary": "No 2FA enabled + npm-otp header omitted",
+                "description": "When user has no 2FA enabled and omits the `npm-otp` header.\n\nAn email OTP is automatically sent to the user's registered email address.\nThe user should check their email and retry the request with the received OTP.\n",
+                "value": {
+                  "error": "A One Time Password (OTP) by email is required."
+                }
+              },
+              "with_2fa_missing_otp": {
+                "summary": "2FA enabled + npm-otp header omitted (legacy flow)",
+                "description": "When user has 2FA enabled, omits the `npm-otp` header, and doesn't include web auth headers. This is a legacy notice supported in older versions of the CLI without support for `npm-auth-type=web`.\n\n**Response includes npm-notice header:**\n\n> `npm-notice: Open https://www.npmjs.com/login/<uuid> to use your security key for authentication`\n",
+                "value": {
+                  "error": "You must provide a one-time pass. Upgrade your client to npm@latest in order to use 2FA."
+                }
+              },
+              "web_auth_flow": {
+                "summary": "2FA enabled + npm-otp header omitted (web auth flow)",
+                "description": "When user has 2FA enabled, omits the `npm-otp` header, and includes both `npm-auth-type=web` and `npm-command=token` headers.\n",
+                "value": {
+                  "authUrl": "https://www.npmjs.com/auth/cli/00000000-0000-0000-0000-000000000000",
+                  "doneUrl": "https://registry.npmjs.org/-/v1/done?authId=00000000-0000-0000-0000-000000000000"
+                }
+              }
+            }
+          }
+        }
+      },
+      "responses-Unauthorized": {
+        "description": "Unauthorized",
+        "headers": {
+          "www-authenticate": {
+            "description": "Authentication challenge (e.g., \"OTP\" when OTP is required)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "npm-notice": {
+            "description": "Additional notice information",
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message"
+                }
+              }
+            },
+            "example": {
+              "error": "Missing \"Bearer\" header."
+            }
+          }
+        }
+      },
+      "EmptySuccess": {
+        "description": "Success",
+        "content": {
+          "*/*": {
+            "schema": {
+              "not": {}
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "StagePackageList": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StagePackageVersion"
+            },
+            "description": "List of staged package versions for the authenticated user."
+          },
+          "page": {
+            "type": "integer",
+            "description": "The current page number (0-indexed)."
+          },
+          "perPage": {
+            "type": "integer",
+            "description": "The number of items returned per page."
+          },
+          "total": {
+            "type": "integer",
+            "description": "The total number of staged package versions available."
+          }
+        }
+      },
+      "StagePackageVersion": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the staged package version."
+          },
+          "packageName": {
+            "type": "string",
+            "description": "The name of the package."
+          },
+          "version": {
+            "type": "string",
+            "description": "The version of the package that is being staged."
+          },
+          "tag": {
+            "type": "string",
+            "description": "The dist-tag associated with the staged package version."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp when the item was staged."
+          },
+          "actor": {
+            "type": "string",
+            "description": "The username of the user who staged the package version."
+          },
+          "actorType": {
+            "type": "string",
+            "description": "The type of the actor (e.g., user, trusted automation)."
+          },
+          "access": {
+            "type": "string",
+            "description": "The access level for the staged package version. 'public' or 'private'.\n",
+            "enum": [
+              "public",
+              "private"
+            ]
+          },
+          "shasum": {
+            "type": "string",
+            "description": "The shasum of the package tarball."
+          }
+        }
+      },
+      "StagedPackumentRequest": {
+        "type": "object",
+        "required": [
+          "name",
+          "versions",
+          "_attachments"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "The package name, including scope if applicable."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the package, including scope if applicable."
+          },
+          "description": {
+            "type": "string",
+            "description": "A short description of the package."
+          },
+          "version": {
+            "type": "string",
+            "description": "The latest version string. Informational; the actual version to publish is determined by the first key in the `versions` object.\n"
+          },
+          "access": {
+            "type": "string",
+            "description": "The access level for the package. 'public' or 'private'.\n",
+            "enum": [
+              "public",
+              "private"
+            ]
+          },
+          "versions": {
+            "type": "object",
+            "description": "An object where each key is a semver version string and the value is the version metadata. The registry assumes the FIRST key in this object is the newest version being published. Only include the single new version being published.\n",
+            "additionalProperties": {
+              "type": "object",
+              "description": "Version-specific metadata (package.json contents for this version).\n",
+              "properties": {
+                "_npmUser": {
+                  "type": "object",
+                  "description": "The user publishing this version. Should include at least the `name` field.\n"
+                }
+              }
+            }
+          },
+          "dist-tags": {
+            "type": "object",
+            "description": "Mapping of distribution tags to semver version strings. e.g., {\"latest\": \"1.2.3\"}\n",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "readme": {
+            "type": "string",
+            "description": "The README content for the package."
+          },
+          "maintainers": {
+            "type": "array",
+            "description": "List of package maintainers.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "author": {
+            "type": "string",
+            "description": "The package author."
+          },
+          "license": {
+            "type": "string",
+            "description": "The SPDX license identifier."
+          },
+          "repository": {
+            "type": "object",
+            "description": "The source code repository.",
+            "properties": {
+              "type": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string"
+              }
+            }
+          },
+          "main": {
+            "type": "string",
+            "description": "The entry point module."
+          },
+          "scripts": {
+            "type": "object",
+            "description": "Package scripts.",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "_nodeVersion": {
+            "type": "string",
+            "description": "The version of node used to publish the package.\n"
+          },
+          "_npmVersion": {
+            "type": "string",
+            "description": "The version of npm used to publish the package.\n"
+          },
+          "_attachments": {
+            "type": "object",
+            "description": "An object containing the binary attachments. Each key is an attachment name (typically `{version}.tgz` for the tarball). The first attachment with `content_type: 'application/octet-stream'` is treated as the tarball; if no content_type is set, the first attachment is used. An optional sigstore provenance bundle attachment may also be included.\n",
+            "additionalProperties": {
+              "type": "object",
+              "required": [
+                "data"
+              ],
+              "properties": {
+                "data": {
+                  "type": "string",
+                  "description": "The base64-encoded binary data of the attachment (tarball or provenance bundle).\n"
+                },
+                "content_type": {
+                  "type": "string",
+                  "description": "The MIME type of the attachment. Use `application/octet-stream` for the tarball. \n  For sigstore provenance bundles, use \n",
+                  "enum": [
+                    "application/octet-stream",
+                    "application/vnd.dev.sigstore.bundle+json;version=0.3"
+                  ]
+                }
+              }
+            }
+          },
+          "_rev": {
+            "type": "string",
+            "description": "Packument document revision. May be included when updating an existing package.\n"
+          }
+        }
+      },
+      "OidcConfigs": {
+        "type": "array",
+        "description": "Array of OIDC trusted publisher configurations",
+        "items": {
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/GitHubActionsConfig"
+            },
+            {
+              "$ref": "#/components/schemas/GitLabPipelinesConfig"
+            },
+            {
+              "$ref": "#/components/schemas/CircleCIConfig"
+            }
+          ]
+        }
+      },
+      "OidcConfigsCreate": {
+        "type": "array",
+        "description": "Array of OIDC trusted publisher configurations to create",
+        "items": {
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/GitHubActionsConfigCreate"
+            },
+            {
+              "$ref": "#/components/schemas/GitLabPipelinesConfigCreate"
+            },
+            {
+              "$ref": "#/components/schemas/CircleCIConfigCreate"
+            }
+          ]
+        }
+      },
+      "GitHubActionsConfig": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "claims"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the configuration"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "github"
+            ],
+            "description": "Type of the trusted publisher"
+          },
+          "claims": {
+            "type": "object",
+            "required": [
+              "repository"
+            ],
+            "properties": {
+              "repository": {
+                "type": "string",
+                "description": "GitHub repository in format 'owner/repo'",
+                "example": "my-org/my-package"
+              },
+              "workflow_ref": {
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "description": "Exact workflow reference"
+                  },
+                  {
+                    "type": "object",
+                    "description": "Partial workflow reference match",
+                    "properties": {
+                      "file": {
+                        "type": "string",
+                        "description": "Workflow file name (e.g., 'publish.yml')"
+                      }
+                    }
+                  }
+                ],
+                "description": "Reference to the GitHub Actions workflow"
+              },
+              "environment": {
+                "type": "string",
+                "description": "GitHub environment name",
+                "example": "production"
+              }
+            }
+          }
+        }
+      },
+      "GitHubActionsConfigCreate": {
+        "type": "object",
+        "required": [
+          "type",
+          "claims"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "github"
+            ],
+            "description": "Type of the trusted publisher"
+          },
+          "claims": {
+            "type": "object",
+            "required": [
+              "repository"
+            ],
+            "properties": {
+              "repository": {
+                "type": "string",
+                "description": "GitHub repository in format 'owner/repo'",
+                "example": "my-org/my-package"
+              },
+              "workflow_ref": {
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "description": "Exact workflow reference"
+                  },
+                  {
+                    "type": "object",
+                    "description": "Partial workflow reference match",
+                    "properties": {
+                      "file": {
+                        "type": "string",
+                        "description": "Workflow file name (e.g., 'publish.yml')"
+                      }
+                    }
+                  }
+                ],
+                "description": "Reference to the GitHub Actions workflow"
+              },
+              "environment": {
+                "type": "string",
+                "description": "GitHub environment name",
+                "example": "production"
+              }
+            }
+          }
+        }
+      },
+      "GitLabPipelinesConfig": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "claims"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the configuration"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "gitlab"
+            ],
+            "description": "Type of the trusted publisher"
+          },
+          "claims": {
+            "type": "object",
+            "required": [
+              "project_path"
+            ],
+            "properties": {
+              "project_path": {
+                "type": "string",
+                "description": "GitLab project path in format 'group/project'",
+                "example": "my-group/my-package"
+              },
+              "ci_config_ref_uri": {
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "description": "Exact CI config reference"
+                  },
+                  {
+                    "type": "object",
+                    "description": "Partial CI config reference match",
+                    "properties": {
+                      "file": {
+                        "type": "string",
+                        "description": "CI configuration file name (e.g., '.gitlab-ci.yml')"
+                      }
+                    }
+                  }
+                ],
+                "description": "Reference to the GitLab CI configuration"
+              },
+              "environment": {
+                "type": "string",
+                "description": "GitLab environment name",
+                "example": "production"
+              }
+            }
+          }
+        }
+      },
+      "CircleCIConfig": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "claims"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the configuration"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "circleci"
+            ],
+            "description": "Type of the trusted publisher"
+          },
+          "claims": {
+            "type": "object",
+            "required": [
+              "oidc.circleci.com/org-id",
+              "oidc.circleci.com/project-id",
+              "oidc.circleci.com/pipeline-definition-id",
+              "oidc.circleci.com/vcs-origin"
+            ],
+            "properties": {
+              "oidc.circleci.com/org-id": {
+                "type": "string",
+                "format": "uuid",
+                "description": "The UUID of the CircleCI organization",
+                "example": "94b40e60-cfd5-486f-a04b-507abf27a83d"
+              },
+              "oidc.circleci.com/project-id": {
+                "type": "string",
+                "format": "uuid",
+                "description": "The UUID of the CircleCI project",
+                "example": "ff4d0d0d-5033-48c5-81e6-7c14a4715837"
+              },
+              "oidc.circleci.com/pipeline-definition-id": {
+                "type": "string",
+                "format": "uuid",
+                "description": "The UUID of the pipeline definition Id",
+                "example": "c959a6e7-5b83-4bc1-b46f-37bf13513490"
+              },
+              "oidc.circleci.com/context-ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "description": "Optional array of CircleCI context UUIDs.",
+                "example": [
+                  "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                ]
+              },
+              "oidc.circleci.com/vcs-origin": {
+                "type": "string",
+                "description": "The origin repository where the CI job runs, in the format `<vcs-provider>/<org>/<repo>`.\n",
+                "example": "github.com/myorg/myrepo"
+              }
+            }
+          }
+        }
+      },
+      "GitLabPipelinesConfigCreate": {
+        "type": "object",
+        "required": [
+          "type",
+          "claims"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "gitlab"
+            ],
+            "description": "Type of the trusted publisher"
+          },
+          "claims": {
+            "type": "object",
+            "required": [
+              "project_path"
+            ],
+            "properties": {
+              "project_path": {
+                "type": "string",
+                "description": "GitLab project path in format 'group/project'",
+                "example": "my-group/my-package"
+              },
+              "ci_config_ref_uri": {
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "description": "Exact CI config reference"
+                  },
+                  {
+                    "type": "object",
+                    "description": "Partial CI config reference match",
+                    "properties": {
+                      "file": {
+                        "type": "string",
+                        "description": "CI configuration file name (e.g., '.gitlab-ci.yml')"
+                      }
+                    }
+                  }
+                ],
+                "description": "Reference to the GitLab CI configuration"
+              },
+              "environment": {
+                "type": "string",
+                "description": "GitLab environment name",
+                "example": "production"
+              }
+            }
+          }
+        }
+      },
+      "CircleCIConfigCreate": {
+        "type": "object",
+        "required": [
+          "type",
+          "claims"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "circleci"
+            ],
+            "description": "Type of the trusted publisher"
+          },
+          "claims": {
+            "type": "object",
+            "required": [
+              "oidc.circleci.com/org-id",
+              "oidc.circleci.com/project-id",
+              "oidc.circleci.com/pipeline-definition-id",
+              "oidc.circleci.com/vcs-origin"
+            ],
+            "properties": {
+              "oidc.circleci.com/org-id": {
+                "type": "string",
+                "format": "uuid",
+                "description": "The UUID of the CircleCI organization",
+                "example": "94b40e60-cfd5-486f-a04b-507abf27a83d"
+              },
+              "oidc.circleci.com/project-id": {
+                "type": "string",
+                "format": "uuid",
+                "description": "The UUID of the CircleCI project",
+                "example": "ff4d0d0d-5033-48c5-81e6-7c14a4715837"
+              },
+              "oidc.circleci.com/pipeline-definition-id": {
+                "type": "string",
+                "format": "uuid",
+                "description": "The UUID of the pipeline definition Id",
+                "example": "c959a6e7-5b83-4bc1-b46f-37bf13513490"
+              },
+              "oidc.circleci.com/context-ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "description": "Optional array of CircleCI context UUIDs.",
+                "example": [
+                  "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                ]
+              },
+              "oidc.circleci.com/vcs-origin": {
+                "type": "string",
+                "description": "The origin repository where the CI job runs, in the format `<vcs-provider>/<org>/<repo>`.\n",
+                "example": "github.com/myorg/myrepo"
+              }
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "OrgName": {
+        "name": "orgName",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "description": "Name of an org"
+      },
+      "TeamName": {
+        "name": "teamName",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "description": "Name of a team"
+      },
+      "RequiredBearerToken": {
+        "name": "Authorization",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "pattern": "^Bearer .+"
+        },
+        "description": "Bearer token for authentication. Must be an npm access token.\n\n**Format:** `Bearer <token>`\n\n**Accepted token types:**\n- npm access token (traditional user token created via `npm login`)\n"
+      },
+      "EscapedPackageName": {
+        "name": "escapedPackageName",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "description": "The name of a package.  Scoped packages need \"/\" to be url encoded to \"%2F\"",
+        "example": "@npmcli%2Farborist"
+      }
+    }
+  },
+  "x-tagGroups": [
+    {
+      "name": "Introduction",
+      "tags": [
+        "Introduction"
+      ]
+    },
+    {
+      "name": "Authentication & Authorization",
+      "tags": [
+        "Authentication"
+      ]
+    },
+    {
+      "name": "Sections",
+      "tags": [
+        "Access",
+        "Audit",
+        "OIDC",
+        "Org",
+        "Publish",
+        "Search",
+        "Stage",
+        "Team",
+        "Tokens",
+        "Trust"
+      ]
+    }
+  ]
+}
