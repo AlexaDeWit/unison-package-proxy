@@ -27,6 +27,10 @@ and transcripts — not source code.
    codebase. Do not run `update` on the user's behalf unless explicitly asked.
 5. After the user has updated the codebase, generate a transcript in
    `transcripts/` that records the new code. See "Transcripts" below.
+6. **Always document definitions** using Unison's first-class `{{ }}` doc
+   syntax. Place an anonymous doc immediately before each type and term
+   definition so it attaches as `definitionName.doc`. Do NOT use `-- |`
+   comments — they are ignored by UCM and won't appear on Unison Share.
 
 ## Workflow: transcripts
 
