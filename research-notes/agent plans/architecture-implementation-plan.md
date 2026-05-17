@@ -23,11 +23,11 @@ core abstractions. This revision corrects that by:
 ├─────────────────────────────────────────────┤
 │              Proxy Core Logic                │  Private→public fallback, mirroring
 ├──────────────────┬──────────────────────────┤
-│   Rules Engine   │    Registry Ability       │  Pure + effectful rules │ abstract ops
+│   Rules Engine   │  RegistryClient (record)  │  Pure + effectful rules │ fetch/parse ops
 ├──────────────────┼──────────────────────────┤
 │  CVE Ability     │    Internal Metadata      │  CVE lookups │ PackageInfo, VersionInfo
 ├──────────────────┴──────────────────────────┤
-│          npm Registry Adapter                │  HTTP client, JSON codecs, type mapping
+│          npm RegistryClient impl             │  HTTP client, JSON codecs, type mapping
 └─────────────────────────────────────────────┘
 ```
 
@@ -141,71 +141,90 @@ evaluateEffectfulRule : EffectfulRule -> RuleContext -> {CVELookup} RuleResult
 evaluateRuleSet : RuleSet -> RuleContext -> {CVELookup} RuleResult
 ```
 
-### 4. Registry Ability
+### 4. Registry Client Interface
 
-The proxy core talks to registries through this ability. Each registry type
-(npm, PyPI, etc.) provides a handler.
+Instead of an ability, the registry interface is a **record of functions**
+(`RegistryClient`). This solves the multiple-instance problem naturally: three
+registries are just three record values. It also maps directly to the
+type-class/interface mental model.
 
 ```
--- The response from a registry fetch (raw bytes + metadata)
+-- Raw response from any registry operation
 type RegistryResponse =
   { statusCode : Nat
-  , headers : [(Text, Text)]
-  , body : Bytes
+  , responseHeaders : [(Text, Text)]
+  , responseBody : Bytes
   , contentType : Text
   }
 
--- What a registry can do
-ability Registry where
-  -- Fetch package metadata (packument)
-  fetchMetadata : PackageId -> {Registry} Either Text RegistryResponse
-  -- Fetch a specific version's tarball
-  fetchTarball : PackageId -> Text -> {Registry} Either Text RegistryResponse
-  -- Publish/mirror a package (for mirror target)
-  publishPackage : PackageId -> Text -> Bytes -> {Registry} Either Text ()
-  -- Convert raw response to internal metadata (for rules evaluation)
-  parsePackageInfo : RegistryResponse -> {Registry} Either Text PackageInfo
+isSuccess : Nat -> Boolean
+isSuccess code = (code >= 200) && (code < 300)
+
+-- The interface that npm, PyPI, etc. each implement
+type RegistryClient =
+  { fetchMetadata    : PackageId -> '{IO, Exception} RegistryResponse
+  , fetchArtifact    : PackageId -> Text -> '{IO, Exception} RegistryResponse
+  , publishArtifact  : PackageId -> Text -> Bytes -> '{IO, Exception} (Either Text ())
+  , parsePackageInfo : RegistryResponse -> Either Text PackageInfo
+  , parseVersionInfo : RegistryResponse -> Text -> Either Text VersionInfo
+  , parseVersionList : RegistryResponse -> Either Text [Text]
+  }
 ```
 
-### 5. npm Registry Adapter
+Key design points:
 
-Maps between npm's wire types and the internal metadata format.
+- **Fetch operations** return `RegistryResponse` with status code + raw body.
+  The proxy checks `statusCode` to decide serve-vs-fallback before parsing.
+- **Parse operations** are pure — they extract internal metadata from a
+  response without IO. Each registry provides its own parsing logic.
+- **Multiple instances are trivial** — `ProxyConfig` holds three `RegistryClient`
+  values (private, public, mirror). No ability disambiguation needed.
+
+### 5. npm RegistryClient Implementation
+
+The first `RegistryClient` implementation, using `@unison/http` for HTTP
+and the existing `NpmRegistryTypes.Json` codecs for parsing.
 
 ```
--- Convert NpmFullPackument → PackageInfo
+-- Construct an npm client for a given base URL
+npmClient : Text -> RegistryClient
+
+-- Internal: convert NpmFullPackument → PackageInfo
 npmToPackageInfo : NpmFullPackument -> PackageInfo
 
--- Convert NpmFullVersion → VersionInfo
+-- Internal: convert NpmFullVersion → VersionInfo
 npmToVersionInfo : PackageId -> NpmFullVersion -> VersionInfo
-
--- npm Registry handler (implements the Registry ability)
-npmRegistryHandler : Text -> Request {Registry} a ->{IO, Exception} a
 ```
 
 ### 6. Proxy Core
 
-Registry-agnostic logic. The proxy core doesn't know about npm.
+Registry-agnostic logic. The proxy core operates on `RegistryClient` values
+and never imports npm-specific types.
+
+The proxy lifecycle for a metadata request:
 
 ```
-handlePackageRequest : PackageId -> RuleSet
-  -> {Registry, Registry, Registry, CVELookup} RegistryResponse
--- Three Registry instances: private, public, mirror
--- 1. Try private upstream
--- 2. On miss: fetch from public, parse metadata, evaluate rules
--- 3. If allowed: mirror, then serve
--- 4. If denied: return error
+-- 1. Fetch from private upstream
+privateResp = !(RegistryClient.fetchMetadata config.private pkgId)
+-- 2. If 2xx → stream responseBody to caller, done
+if isSuccess (RegistryResponse.statusCode privateResp) then
+  toHttpResponse privateResp
+else
+  -- 3. Fetch from public upstream
+  publicResp = !(RegistryClient.fetchMetadata config.public pkgId)
+  if isSuccess (RegistryResponse.statusCode publicResp) then
+    -- 4. Parse metadata for rules evaluation
+    match RegistryClient.parsePackageInfo config.public publicResp with
+      Right info ->
+        ctx = RuleContext info None
+        match evaluateRuleSet config.rules ctx with
+          -- 5. Rules allow → mirror + stream to caller
+          RuleDecision.Allow _ ->
+            !(RegistryClient.publishArtifact config.mirror pkgId ...)
+            toHttpResponse publicResp
+          -- 6. Rules deny → 403
+          RuleDecision.Deny reason -> forbiddenResponse reason
 ```
-
-In practice, since Unison abilities are nominal, we'll likely need
-wrapper types or different ability names for the three registries:
-
-```
-ability PrivateRegistry where ...
-ability PublicRegistry where ...
-ability MirrorTarget where ...
-```
-
-Or a single ability with an endpoint parameter.
 
 ### 7. HTTP Server
 
@@ -213,24 +232,25 @@ Thin layer that maps HTTP requests to proxy core operations.
 
 ## Implementation Phases
 
-### Phase 1: Core Types (Current Session)
+### Phase 1: Core Types + RegistryClient (Done)
 
 - PackageId, PackageInfo, VersionInfo, RuleContext
 - CVERecord, Severity (data structures only)
-- PureRule, EffectfulRule, RuleSet, RuleResult
-- Pure rules evaluator (no abilities needed, fully testable)
-- **Milestone**: `evaluatePureRule AllowAll ctx` returns `Allow`
+- PureRule, EffectfulRule, RuleSet, RuleDecision
+- RegistryResponse, RegistryClient record, isSuccess
+- Pure + effectful rules evaluators
+- **Milestone**: All types and evaluation functions typecheck ✓
 
-### Phase 2: Registry Ability + npm Adapter
+### Phase 2: npm RegistryClient Implementation
 
-- Registry ability definition
-- npm adapter: convert NpmFullPackument → PackageInfo, NpmFullVersion → VersionInfo
-- npm Registry handler using @unison/http client
+- `npmClient : Text -> RegistryClient`
+- Convert NpmFullPackument → PackageInfo, NpmFullVersion → VersionInfo
+- HTTP fetch using @unison/http client
 - **Milestone**: Fetch axios packument from npm, parse to PackageInfo
 
 ### Phase 3: Proxy Core Logic
 
-- Private/public/mirror coordination
+- Private/public/mirror coordination using three RegistryClient values
 - Rules evaluation wired into the fetch path
 - **Milestone**: Deny-by-default works — unlisted packages are rejected
 
@@ -248,11 +268,11 @@ Thin layer that maps HTTP requests to proxy core operations.
 
 ## Open Questions (Updated)
 
-1. **Ability disambiguation**: How to express three Registry instances (private,
-   public, mirror) in Unison's ability system? Options: wrapper abilities,
-   explicit endpoint parameter, or handler composition.
-2. **Streaming**: @unison/http supports chunked encoding — need to verify this
-   works for tarball passthrough without buffering the full body.
+1. ~~**Ability disambiguation**~~: Solved by using `RegistryClient` record
+   instead of an ability. Three registries are three record values.
+2. **Streaming**: `RegistryResponse.responseBody` is currently `Bytes` (fully
+   buffered). For large tarballs, investigate @unison/http chunked encoding
+   to avoid buffering the full body in memory.
 3. **Semver parsing**: Needed for CVE version range matching. No existing library
    found on Unison Share. Can defer until Phase 5.
 4. **Rule serialization**: Rules need to be loadable from config. JSON encoding

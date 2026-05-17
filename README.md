@@ -16,27 +16,73 @@ The proxy for a given registry must be provided with the configuration for 3 reg
 
 # Architectural Plan
 
-The architecture will be separated into the following components:
+The system is built in layers. The top layers are registry-agnostic; only the
+bottom layer knows about a specific registry protocol.
 
-## A Rules Engine
+## RegistryClient Interface
 
-A rules engine based on a simple notion... Deny by default.
+The core abstraction is `RegistryClient` — a record of functions that any
+registry (npm, PyPI, etc.) implements. Each function either fetches data from the
+registry or parses a response into the proxy's internal metadata format.
 
-By default no packages are available, then when checking for a specific package, the engine will check the public upstream, and iterate through each rule. Once a rule allows the package to be consumed, checks cease.
+```
+type RegistryClient =
+  { fetchMetadata    : PackageId -> '{IO, Exception} RegistryResponse
+  , fetchArtifact    : PackageId -> Text -> '{IO, Exception} RegistryResponse
+  , publishArtifact  : PackageId -> Text -> Bytes -> '{IO, Exception} (Either Text ())
+  , parsePackageInfo : RegistryResponse -> Either Text PackageInfo
+  , parseVersionInfo : RegistryResponse -> Text -> Either Text VersionInfo
+  , parseVersionList : RegistryResponse -> Either Text [Text]
+  }
+```
 
-The reason for this deny-by-default and first-allow-wins approach is that it is reasonably straightforward, and easy to explain to consumers. Additionally it simplifies the various cases where a more complex system would allow various escape hatches, such as when a CVE may need to be addressed, expediting what would otherwise be a timeout restriction.
+The proxy is configured with **three** `RegistryClient` values — private
+upstream, public upstream, and mirror target — and a `RuleSet`. Nothing in the
+proxy core imports or references registry-specific types.
+
+## Proxy Lifecycle
+
+When a client requests a package:
+
+1. **Private fetch**: call `fetchMetadata` on the private upstream.
+2. **Success (2xx)**: forward the response body directly to the caller. Done.
+3. **Miss (non-2xx)**: fall back to the public upstream.
+4. **Public fetch**: call `fetchMetadata` on the public upstream.
+5. **Parse**: use `parsePackageInfo` to extract internal `PackageInfo` metadata.
+6. **Rules evaluation**: evaluate the `RuleSet` against the metadata.
+   - Pure rules run first (scope checks, name allowlists — no IO).
+   - If undecided, effectful rules run (CVE lookups).
+   - If nothing allows the package, it is **denied by default**.
+7. **Allowed**: mirror the response to the mirror target, then forward to the caller.
+8. **Denied**: return a 403 with the denial reason.
+
+Tarball/artifact requests follow the same pattern via `fetchArtifact`.
+
+## Rules Engine
+
+A deny-by-default, first-decisive-wins engine. Rules are split into two tiers:
+
+- **Pure rules** — evaluated against `PackageInfo` / `VersionInfo` with no side
+  effects. Fast and deterministic. Examples: `AllowScope "babel"`,
+  `DenyDeprecated`, `DenyHasInstallScript`.
+- **Effectful rules** — may perform IO (CVE database lookups, external policy
+  checks). Only evaluated when no pure rule has decided. Examples: `DenyIfCVE`,
+  `AllowIfNoCVE`.
+
+If no rule produces a decision, the package is denied.
 
 ## CVE Indexing Subsystem
 
-This subsystem will be responsible for indexing CVE databases, and providing an interface for the rules engine to query whether a given package version has or resolves and CVEs.
+This subsystem will be responsible for indexing CVE databases, and providing an
+interface for the rules engine to query whether a given package version has or
+resolves any CVEs. Modelled as the `CVELookup` Unison ability so handlers can be
+backed by in-memory caches, OSV.dev, or npm's bulk advisory endpoint.
 
-## Registry Abstraction
+## npm Implementation
 
-This will abstract over the specific registry's API protocol, as well as formatting data to be used by the rules engine.
-
-## NPM Registry Implementation
-
-As the first registry to be implemented, this will implement the registry abstraction for the npm registry, and will be the primary focus of this project.
+The first `RegistryClient` implementation. Uses `@unison/http` for HTTP requests
+and the existing `NpmRegistryTypes.Json` codecs to parse npm registry responses
+into the internal `PackageInfo` / `VersionInfo` format.
 
 ## Setup
 
